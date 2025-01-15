@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./src/",
+    "paths": {
+      "@/*": ["*"],
+      "@components/*": ["components/*"],
+      "@images/*": ["../public/*"],
+
+      "api": ["libs/axios"],
+      "kt-icon": ["libs/KTIcon"],
+      "server-hydration": ["libs/server-hydration"],
+      "form-builder": ["libs/form-builder"],
+      "wizard-builder": ["libs/wizard-builder"],
+      "select-builder": ["libs/select-builder"],
+    }
+  }
+}

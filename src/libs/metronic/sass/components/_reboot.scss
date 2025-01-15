@@ -1,0 +1,43 @@
+//
+// Reboot
+//
+
+h1, h2, h3, h4, h5, h6 {
+}
+
+@mixin font-config($font-size: null, $line-height: null) {
+  font-size: $font-size;
+  //line-height: $line-height;
+}
+
+// Map com os valores de font-size e line-height
+$font-sizes: (
+  1: $h1-font-size,
+  2: $h2-font-size,
+  3: $h3-font-size,
+  4: $h4-font-size,
+  5: $h5-font-size,
+  6: $h6-font-size
+);
+
+$line-heights: (
+  1: 1,
+  2: 2.5rem,
+  3: 2.25rem,
+  4: 2rem,
+  5: 1.75rem,
+  6: 1.75rem
+);
+
+// Loop para gerar os estilos dinamicamente
+@each $level, $font-size in $font-sizes {
+  #{"h#{$level}"} {
+    @include font-config($font-size, map-get($line-heights, $level));
+  }
+}
+
+
+b, strong {
+	font-weight: $font-weight-bold;
+}
+

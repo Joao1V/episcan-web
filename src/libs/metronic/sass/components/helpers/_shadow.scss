@@ -1,0 +1,25 @@
+//
+// Shadow
+//
+
+.shadow-xs {
+    box-shadow: var(--#{$prefix}box-shadow-xs);
+}
+
+.shadow-sm {
+    box-shadow: var(--#{$prefix}box-shadow-sm);
+}
+
+.shadow {
+    box-shadow: var(--#{$prefix}box-shadow);
+}
+
+.shadow-lg {
+    box-shadow: var(--#{$prefix}box-shadow-lg);
+}
+
+@media (min-width: 768px) {
+    .shadow-md-sm {
+        box-shadow: var(--#{$prefix}box-shadow-sm);
+    }
+}
