@@ -18,15 +18,15 @@ body {
     font-weight: $font-weight-base;
     font-family: $font-family-sans-serif;
 
-     //Tablet mode
+    // Tablet mode
     @include media-breakpoint-down(lg) {
         font-size: $app-general-root-font-size-tablet !important;
     }
 
-     //Mobile mode
+    // Mobile mode
     @include media-breakpoint-down(md) {
         font-size: $app-general-root-font-size-mobile !important;
-    }
+    }    
 }
 
 body {

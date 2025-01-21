@@ -94,9 +94,9 @@
             bottom: 0;
             transition: $app-sidebar-panel-base-transition;
 
-            //box-shadow: var(--#{$prefix}pages-sidebar-panel-sticky-box-shadow);
-            //border-left: var(--#{$prefix}pages-sidebar-panel-sticky-border-start);
-            //border-right: var(--#{$prefix}pages-sidebar-panel-sticky-border-end);
+            //box-shadow: var(--#{$prefix}app-sidebar-panel-sticky-box-shadow);
+            //border-left: var(--#{$prefix}app-sidebar-panel-sticky-border-start);
+            //border-right: var(--#{$prefix}app-sidebar-panel-sticky-border-end);
 
             @include property( z-index, $app-sidebar-panel-sticky-z-index);
             @include property( margin-left, $app-sidebar-panel-sticky-gap-start);
@@ -108,10 +108,10 @@
         [data-kt-app-sidebar-panel-minimize="on"] & {
             transition: $app-sidebar-panel-base-transition;
 
-            //background-color: var(--#{$prefix}pages-sidebar-panel-minimize-bg-color);
-            //box-shadow: var(--#{$prefix}pages-sidebar-panel-minimize-box-shadow);
-            //border-left: var(--#{$prefix}pages-sidebar-panel-minimize-border-start);
-            //border-right: var(--#{$prefix}pages-sidebar-panel-minimize-border-end);
+            //background-color: var(--#{$prefix}app-sidebar-panel-minimize-bg-color);
+            //box-shadow: var(--#{$prefix}app-sidebar-panel-minimize-box-shadow);
+            //border-left: var(--#{$prefix}app-sidebar-panel-minimize-border-start);
+            //border-right: var(--#{$prefix}app-sidebar-panel-minimize-border-end);
 
             @include property( margin-left, $app-sidebar-panel-minimize-gap-start);
             @include property( margin-right, $app-sidebar-panel-minimize-gap-end);

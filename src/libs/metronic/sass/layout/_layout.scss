@@ -2,17 +2,7 @@
 // Layout
 //
 
-@import "root";
-@import "sidebar/sidebar";
-@import "sidebar/sidebar-minimize";
-@import "sidebar/sidebar-dark";
-@import "sidebar/sidebar-light";
-@import "aside";
-@import "header/header";
-@import "header/header-dark";
-@import "header/header-sidebar-light";
-@import "content";
+@import "header";
 @import "toolbar";
-@import "main";
-@import "page-title";
+@import "content";
 @import "font-family";

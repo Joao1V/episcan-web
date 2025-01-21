@@ -109,10 +109,10 @@
         [data-kt-app-aside-minimize="on"] & {
             transition: $app-aside-base-transition;
 
-            //background-color: var(--#{$prefix}pages-aside-minimize-bg-color);
-            //box-shadow: var(--#{$prefix}pages-aside-minimize-box-shadow);
-            //border-start: var(--#{$prefix}pages-aside-minimize-border-start);
-            //border-end: var(--#{$prefix}pages-aside-minimize-border-end);
+            //background-color: var(--#{$prefix}app-aside-minimize-bg-color);
+            //box-shadow: var(--#{$prefix}app-aside-minimize-box-shadow);
+            //border-start: var(--#{$prefix}app-aside-minimize-border-start);
+            //border-end: var(--#{$prefix}app-aside-minimize-border-end);
 
             @include property( margin-left, $app-aside-minimize-gap-start);
             @include property( margin-right, $app-aside-minimize-gap-end);

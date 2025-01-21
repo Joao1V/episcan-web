@@ -382,11 +382,11 @@ $gutters: (
 
 $font-family-sans-serif: var(--primary-font-family), sans-serif !default;
 
-$font-size-base: 1rem !default;
+$font-size-base: 1.145rem !default;
 
 $font-size-lg: $font-size-base * 1.065 !default;   // 14.04px
 $font-size-xl: $font-size-base * 1.15 !default;   // 16.04px
-$font-size-sm: $font-size-base * .85 !default;   // 12.025px
+$font-size-sm: $font-size-base * .85 !default;   // 12.0_25px
 
 $font-weight-lighter: lighter !default;
 $font-weight-light: 300 !default;

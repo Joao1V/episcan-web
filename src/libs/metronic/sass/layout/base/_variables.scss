@@ -83,11 +83,11 @@ $app-header-sticky-z-index: 100 !default;
 $app-header-sticky-z-index-mobile: 100 !default;
 $app-header-sticky-backdrop-filter: null !default;
 $app-header-sticky-backdrop-filter-mobile: null !default;
-$app-header-sticky-bg-color: #fff !default;
+$app-header-sticky-bg-color: null !default;
 $app-header-sticky-bg-color-dark: null !default;
 $app-header-sticky-box-shadow: null !default;
 $app-header-sticky-box-shadow-dark: null !default;
-$app-header-sticky-border-bottom: #e3e3e3 !default;
+$app-header-sticky-border-bottom: null !default;
 $app-header-sticky-border-bottom-dark: null !default;
 
 // Header primary

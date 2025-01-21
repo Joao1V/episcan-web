@@ -72,10 +72,10 @@
         [data-kt-app-sidebar-primary-minimize="on"] & {
             transition: $app-sidebar-primary-base-transition;
 
-            //background-color: var(--#{$prefix}pages-sidebar-primary-minimize-bg-color);
-            //box-shadow: var(--#{$prefix}pages-sidebar-primary-minimize-box-shadow);
-            //border-left: var(--#{$prefix}pages-sidebar-primary-minimize-border-start);
-            //border-right: var(--#{$prefix}pages-sidebar-primary-minimize-border-end);
+            //background-color: var(--#{$prefix}app-sidebar-primary-minimize-bg-color);
+            //box-shadow: var(--#{$prefix}app-sidebar-primary-minimize-box-shadow);
+            //border-left: var(--#{$prefix}app-sidebar-primary-minimize-border-start);
+            //border-right: var(--#{$prefix}app-sidebar-primary-minimize-border-end);
 
             @include property( margin-left, $app-sidebar-primary-minimize-gap-start);
             @include property( margin-right, $app-sidebar-primary-minimize-gap-end);
@@ -183,10 +183,10 @@
         [data-kt-app-sidebar-primary-minimize-mobile="on"] & {
             transition: $app-sidebar-primary-base-transition;
 
-            //background-color: var(--#{$prefix}pages-sidebar-primary-minimize-bg-color-mobile);
-            //box-shadow: var(--#{$prefix}pages-sidebar-primary-base-box-shadow-mobile);
-            //border-left: var(--#{$prefix}pages-sidebar-primary-minimize-border-start-mobile);
-            //border-left: var(--#{$prefix}pages-sidebar-primary-minimize-border-end-mobile);
+            //background-color: var(--#{$prefix}app-sidebar-primary-minimize-bg-color-mobile);
+            //box-shadow: var(--#{$prefix}app-sidebar-primary-base-box-shadow-mobile);
+            //border-left: var(--#{$prefix}app-sidebar-primary-minimize-border-start-mobile);
+            //border-left: var(--#{$prefix}app-sidebar-primary-minimize-border-end-mobile);
 
             @include property( margin-left, $app-sidebar-primary-minimize-gap-start-mobile);
             @include property( margin-right, $app-sidebar-primary-minimize-gap-end-mobile);

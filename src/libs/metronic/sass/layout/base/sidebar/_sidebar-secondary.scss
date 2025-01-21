@@ -95,10 +95,10 @@
         [data-kt-app-sidebar-secondary-minimize="on"] & {
             transition: $app-sidebar-secondary-base-transition;
             
-            //background-color: var(--#{$prefix}pages-sidebar-secondary-minimize-bg-color);
-            //box-shadow: var(--#{$prefix}pages-sidebar-secondary-minimize-box-shadow);
-            //border-left: var(--#{$prefix}pages-sidebar-secondary-minimize-border-start);
-            //border-right: var(--#{$prefix}pages-sidebar-secondary-minimize-border-end);
+            //background-color: var(--#{$prefix}app-sidebar-secondary-minimize-bg-color);
+            //box-shadow: var(--#{$prefix}app-sidebar-secondary-minimize-box-shadow);
+            //border-left: var(--#{$prefix}app-sidebar-secondary-minimize-border-start);
+            //border-right: var(--#{$prefix}app-sidebar-secondary-minimize-border-end);
 
             @include property( margin-left, $app-sidebar-secondary-minimize-gap-start-mobile);
             @include property( margin-right, $app-sidebar-secondary-minimize-gap-end-mobile);
@@ -232,10 +232,10 @@
             border-left: var(--#{$prefix}app-sidebar-secondary-minimize-border-start-mobile);
             border-right: var(--#{$prefix}app-sidebar-secondary-minimize-border-end-mobile);
 
-            //@include property( margin-left, $pages-sidebar-secondary-minimize-gap-start-mobile);
-            //@include property( margin-right, $pages-sidebar-secondary-minimize-gap-end-mobile);
-            //@include property( margin-top, $pages-sidebar-secondary-minimize-gap-top-mobile);
-            //@include property( margin-bottom, $pages-sidebar-secondary-minimize-gap-bottom-mobile);
+            //@include property( margin-left, $app-sidebar-secondary-minimize-gap-start-mobile);
+            //@include property( margin-right, $app-sidebar-secondary-minimize-gap-end-mobile);
+            //@include property( margin-top, $app-sidebar-secondary-minimize-gap-top-mobile);
+            //@include property( margin-bottom, $app-sidebar-secondary-minimize-gap-bottom-mobile);
         }
 
         [data-kt-app-sidebar-secondary-hoverable-mobile="true"] & {
