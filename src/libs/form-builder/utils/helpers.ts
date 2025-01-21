@@ -10,6 +10,7 @@ export const generateSchema = (fields: FormField[]): yup.ObjectSchema<any> => {
          }
          return acc;
       },
+
       {} as Record<string, yup.StringSchema>,
    );
 
