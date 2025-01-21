@@ -9,7 +9,7 @@ import saveValue from '../utils/saveValue';
 
 export type PhoneInputConfig = CommonFieldConfig & {
    type: 'phone-input';
-   onChange: (data: { onlyValue: string; formattedValue: string }) => any;
+   onChange?: (data: { onlyValue: string; formattedValue: string }) => any;
 };
 
 const PhoneInput = ({ config }: FieldDefaultProps<'phone-input'>) => {

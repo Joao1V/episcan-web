@@ -1,17 +1,15 @@
 import { ReactNode } from 'react';
 
 import {
-   EmailConfig,
+   CheckboxConfig,
    GoogleAutocompleteConfig,
+   InputConfig,
    MaskedInputConfig,
-   NumberConfig,
-   PasswordConfig,
    PhoneInputConfig,
    RadioConfig,
    SelectConfig,
    SelectFileConfig,
    SubmitConfig,
-   TextConfig,
    TextareaConfig,
 } from '../fields/types/index';
 import * as yup from 'yup';
@@ -32,43 +30,18 @@ export type CommonFieldConfig = {
    };
 };
 
-export type CommonConfigInput = {
-   addClassName?: string;
-   disabled?: boolean;
-};
-
 export type FormField =
    | GoogleAutocompleteConfig
    | SelectFileConfig
    | PhoneInputConfig
    | MaskedInputConfig
-   | TextConfig
-   | PasswordConfig
-   | EmailConfig
-   | NumberConfig
+   | InputConfig
    | SelectConfig
    | SubmitConfig
    | RadioConfig
+   | CheckboxConfig
    | TextareaConfig;
 
-// Mapa entre literais de string e tipos de campo
-export type FieldMappings = {
-   'google-autocomplete': GoogleAutocompleteConfig;
-   'select-file': SelectFileConfig;
-   'phone-input': PhoneInputConfig;
-   'number-format': MaskedInputConfig;
-   text: TextConfig;
-   password: PasswordConfig;
-   email: EmailConfig;
-   number: NumberConfig;
-   select: SelectConfig;
-   submit: SubmitConfig;
-   radio: RadioConfig;
-   textarea: TextareaConfig;
-};
-
-export type FieldType<T extends keyof FieldMappings> = FieldMappings[T];
-
-export type FieldDefaultProps<T extends keyof FieldMappings> = {
-   config: FieldType<T>;
+export type FieldDefaultProps<T extends FormField['type']> = {
+   config: Extract<FormField, { type: T }>;
 };

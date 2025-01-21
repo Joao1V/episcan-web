@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { Controller, useFormContext } from 'react-hook-form';
+import { Controller, useFormContext, useWatch } from 'react-hook-form';
 
 import RenderField from '@/libs/form-builder/components/RenderField';
 
@@ -58,7 +58,7 @@ const RenderController = (props: any) => {
             <RenderField item={item} />
 
             {isErrorField ?
-               <p className={'invalid-feedback d-block'}>{isErrorField.message}</p>
+               <p className={'invalid-feedback d-block mb-1'}>{isErrorField.message}</p>
             :  item?.helperInput && <small className={'form-text'}>{item.helperInput}</small>}
          </div>
       );

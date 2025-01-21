@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { useFormContext } from 'react-hook-form';
+import { useFormContext, useWatch } from 'react-hook-form';
 
 import { CommonFieldConfig, FieldDefaultProps } from '../types/fields';
 
@@ -10,6 +10,10 @@ export type SubmitConfig = Pick<CommonFieldConfig, 'col' | 'showIf'> & {
    options?: {
       buttonClassName?: string;
       buttonType?: 'primary' | 'secondary';
+      enableIf?: {
+         accessor: string;
+         value: string | number | ((value: any) => any);
+      };
    };
 };
 const ButtonSubmit = ({ config }: FieldDefaultProps<'submit'>) => {
@@ -21,10 +25,22 @@ const ButtonSubmit = ({ config }: FieldDefaultProps<'submit'>) => {
 
    const { options } = config;
 
+   const dependentValue = useWatch({ name: options?.enableIf?.accessor || '' });
+   const dependentEnable = () => {
+      if (options && 'enableIf' in options && options.enableIf) {
+         if (typeof options.enableIf.value === 'function') {
+            const conditional = options.enableIf.value(dependentValue || '');
+            return !conditional;
+         } else if (dependentValue !== options.enableIf.value) {
+            return true;
+         }
+      }
+      return false;
+   };
    return (
       <div className={`d-flex justify-content-end`}>
          <button
-            disabled={isSubmitting}
+            disabled={dependentEnable() || isSubmitting}
             className={`btn btn-${options?.buttonType || 'primary'} ${options?.buttonClassName || ''}`}
             type={'submit'}
          >

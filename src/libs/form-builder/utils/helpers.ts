@@ -1,4 +1,4 @@
-import { BaseField, FormField } from '../types/fields';
+import { FormField } from '../types/fields';
 import * as yup from 'yup';
 
 export const generateSchema = (fields: FormField[]): yup.ObjectSchema<any> => {

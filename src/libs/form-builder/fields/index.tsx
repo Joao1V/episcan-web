@@ -1,26 +1,20 @@
 import ButtonSubmit from './ButtonSubmit';
+import Checkbox from './Checkbox';
 import GoogleAutocomplete from './GoogleAutocomplete';
-import Email from './Input.Email';
-import Number from './Input.Number';
-import Password from './Input.Password';
-import Text from './Input.Text';
+import Input from './Input';
 import MaskedInput from './MaskedInput';
 import PhoneNumberInput from './PhoneNumberInput';
 import Radio from './Radio';
 import Select from './Select';
 import SelectFile from './SelectFile';
-import Textarea from './Textarea';
 
 const Fields = {
-   Email,
-   Number,
-   Password,
-   Text,
    Select,
-   Textarea,
+   Checkbox,
    ButtonSubmit,
    MaskedInput,
    Radio,
+   Input,
    PhoneNumberInput,
    SelectFile,
    Google: GoogleAutocomplete,

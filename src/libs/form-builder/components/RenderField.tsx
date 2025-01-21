@@ -7,22 +7,20 @@ const RenderField = (props: any) => {
 
    switch (item.type) {
       case 'text':
-         return <Fields.Text config={item} />;
       case 'email':
       case 'login':
-         return <Fields.Email config={item} />;
       case 'number':
-         return <Fields.Number config={item} />;
-      case 'password':
-         return <Fields.Password config={item} />;
       case 'textarea':
-         return <Fields.Textarea config={item} />;
+      case 'password':
+         return <Fields.Input {...item} />;
       case 'number-format':
-         return <Fields.MaskedInput config={item} />;
+         return <Fields.MaskedInput {...item} />;
       case 'select':
          return <Fields.Select config={item} />;
       case 'radio':
          return <Fields.Radio config={item} />;
+      case 'checkbox':
+         return <Fields.Checkbox config={item} />;
       case 'select-file':
          return <Fields.SelectFile config={item} />;
       case 'google-autocomplete':
@@ -35,14 +33,9 @@ const RenderField = (props: any) => {
       //BR FIELDS
       case 'cnpj':
       case 'cpf':
-         return (
-            <Fields.MaskedInput
-               config={{
-                  ...item,
-                  format: item.type === 'cnpj' ? '##.###.###/####-##' : '###.###.###-##',
-               }}
-            />
-         );
+         item.format = item.type === 'cnpj' ? '##.###.###/####-##' : '###.###.###-##';
+
+         return <Fields.MaskedInput {...item} />;
       case 'custom':
          return item.render();
       default:

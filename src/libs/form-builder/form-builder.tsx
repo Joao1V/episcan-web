@@ -21,13 +21,21 @@ interface FormBuilderProps {
    config: FormBuilderConfig;
    isLoading?: boolean;
    isResetOnSubmit?: boolean;
+   isSubmitOnEnter?: boolean;
    isEnableWatcher?: boolean;
    id?: string;
    defaultValues?: Record<string, any>;
-   onSubmit?: (args: Record<string, any>) => Promise<void>;
+   onSubmit?: (args: Record<string, any>) => Promise<void> | void;
 }
 const FormBuilder: React.FC<FormBuilderProps> = (props) => {
-   const { config, id, isEnableWatcher, defaultValues, isResetOnSubmit = true } = props;
+   const {
+      config,
+      id,
+      isSubmitOnEnter,
+      isEnableWatcher,
+      defaultValues,
+      isResetOnSubmit = true,
+   } = props;
 
    const methods = useForm({
       resolver: yupResolver(config?.schema || generateSchema(config.fields) || null),
@@ -39,11 +47,23 @@ const FormBuilder: React.FC<FormBuilderProps> = (props) => {
       formState: { errors, isSubmitting, isValid, isLoading },
       reset,
       setValue,
+      setFocus,
+      setError,
       watch,
       getValues,
    } = methods;
 
    const { setForm, updater, watcher, clearForm } = useFormStore();
+
+   const showErrors = React.useCallback((e: any) => {
+      if (e?.cause?.formattedErrors) {
+         Object.entries(e.cause.formattedErrors as Record<string, string>).forEach(
+            ([key, value]) => {
+               setError(key, { type: 'custom', message: value });
+            },
+         );
+      }
+   }, []);
 
    const _formBuilderReturn = React.useRef({
       data: {
@@ -54,21 +74,20 @@ const FormBuilder: React.FC<FormBuilderProps> = (props) => {
       errors,
       isSubmitting,
       setValue,
+      setFocus,
+      showValidatorMessages: showErrors,
       onValidateForm: async (isReturnValue = false) => {
-         try {
-            let isValidForm = true;
-            const onError = () => {
-               isValidForm = false;
-            };
-            await handleSubmit(onSubmit, onError)();
+         let isValidForm = true;
+         const onError = () => {
+            isValidForm = false;
+         };
 
-            if (isValidForm) {
-               return isReturnValue ? getValues() : isValidForm;
-            } else {
-               return isValidForm;
-            }
-         } catch (e) {
-            throw e;
+         await handleSubmit(onSubmit, onError)();
+
+         if (isValidForm) {
+            return isReturnValue ? getValues() : isValidForm;
+         } else {
+            return isValidForm;
          }
       },
    });
@@ -93,7 +112,7 @@ const FormBuilder: React.FC<FormBuilderProps> = (props) => {
                   }
                }
             });
-            await props.onSubmit(returnedArgs);
+            props.onSubmit && (await props.onSubmit(returnedArgs));
             if (isResetOnSubmit) {
                let resetValues: any = {};
                config.fields.forEach((item) => {
@@ -101,12 +120,22 @@ const FormBuilder: React.FC<FormBuilderProps> = (props) => {
                });
                reset(resetValues);
             }
-         } catch (e) {
-            console.log('error', e);
-            throw e;
+         } catch (e: any) {
+            console.log('FORM_BUILDER', e);
+            showErrors(e);
          }
       }
    }, []);
+
+   const handleKeyDown = React.useCallback(
+      (e: React.KeyboardEvent<HTMLFormElement>) => {
+         if (isSubmitOnEnter && e.key === 'Enter' && !isSubmitting) {
+            e.preventDefault();
+            handleSubmit(onSubmit)();
+         }
+      },
+      [isSubmitting],
+   );
 
    React.useEffect(() => {
       if (Object.keys(errors).length > 0 && id) {
@@ -125,6 +154,12 @@ const FormBuilder: React.FC<FormBuilderProps> = (props) => {
    React.useEffect(() => {
       if (id) {
          setForm(id, _formBuilderReturn.current);
+
+         if (!isEnableWatcher) {
+            return () => {
+               clearForm(id);
+            };
+         }
       }
       if (id && isEnableWatcher) {
          const subscription = watch((value: any) => watcher(id, value));
@@ -139,6 +174,7 @@ const FormBuilder: React.FC<FormBuilderProps> = (props) => {
       <FormProvider {...methods}>
          <form
             onSubmit={handleSubmit(onSubmit)}
+            onKeyDown={handleKeyDown}
             autoComplete={'off'}
             id={id || ''}
             className={`row ${config?.formClassName || 'gy-3'}`}

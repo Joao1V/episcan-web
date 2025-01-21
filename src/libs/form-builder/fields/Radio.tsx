@@ -1,21 +1,21 @@
-import { memo } from 'react';
+import React, { memo } from 'react';
 import { useController } from 'react-hook-form';
 
-import { CommonFieldConfig } from '@/libs/form-builder/types/fields';
+import { CommonFieldConfig, FieldDefaultProps } from '@/libs/form-builder/types/fields';
 
 export type RadioConfig = CommonFieldConfig & {
    type: 'radio';
+   rowClass?: string;
    options: {
       label: string;
       value: number | string;
+      colClass: string;
    }[];
 };
-const Radio = (props: any) => {
-   const {
-      config: { options, rowClass, onChange },
-      accessor,
-   } = props;
+const Radio: React.FC<FieldDefaultProps<'radio'>> = (props: any) => {
+   const { options, rowClass, onChange, accessor } = props.config;
 
+   console.log(props);
    const {
       field,
       fieldState: { error },
@@ -26,7 +26,11 @@ const Radio = (props: any) => {
          <div className={`row ${rowClass || 'row-cols-auto mb-2 g-2'}`}>
             {options.map(
                (
-                  option: { label: string; value: string | number; colClass?: string },
+                  option: {
+                     label: string;
+                     value: number | string;
+                     colClass: string;
+                  },
                   index: number,
                ) => {
                   let isActive = field.value === option.value;
