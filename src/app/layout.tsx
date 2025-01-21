@@ -24,9 +24,15 @@ export default function RootLayoutLayoutLayout({
    children,
 }: Readonly<{ children: React.ReactNode }>) {
    return (
-      <html lang="pt-BR" data-bs-theme="dark" cz-shortcut-listen="true">
+      <html lang="pt-BR" data-bs-theme="light">
          <body
-            suppressHydrationWarning
+            id="kt_app_body"
+            data-kt-app-header-fixed-mobile="true"
+            data-kt-app-toolbar-enabled="true"
+            cz-shortcut-listen="true"
+            data-kt-sticky-app-header-sticky="on"
+            data-kt-app-header-sticky="on"
+            data-kt-scrolltop="on"
             className={`${geistSans.variable} ${geistMono.variable} app-default`}
          >
             <Providers>{children}</Providers>

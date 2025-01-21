@@ -16,7 +16,7 @@ const authOptions: NextAuthOptions = {
    secret: process.env.NEXTAUTH_SECRET,
    pages: {
       signIn: '/login',
-      newUser: '/register',
+      newUser: '/registro',
    },
    session: {
       strategy: 'jwt',
@@ -61,6 +61,9 @@ const authOptions: NextAuthOptions = {
                         message: error.message,
                         errors: error.response.data,
                      }),
+                     {
+                        cause: error,
+                     },
                   );
                }
             }

@@ -3,43 +3,30 @@
 import React from 'react';
 
 import logo from '@images/next.svg';
-import { signIn } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 import FormBuilder, { useFormBuilder } from '@/libs/form-builder';
-import { fakeApi } from '@/libs/helpers/functions';
+import { login } from '@/services/http/auth/login';
 
 export default function LoginPage() {
    const router = useRouter();
    const { onValidateForm, isSubmitting } = useFormBuilder('login');
    async function onSubmit(args: any) {
       try {
-         const response = await fakeApi(args, false, 2000);
+         const { redirectTo, error } = await login(args);
+         if (error) {
+            const a: any = JSON.parse(error || '');
 
-         console.log(response);
-      } catch (e) {}
+            console.log(a);
 
-      return;
-      // try {
-      //    const response = await signIn('credentials', {
-      //       login: args?.login,
-      //       password: args?.password,
-      //       redirect: false,
-      //    });
-      //
-      //    if (response?.error) {
-      //       const a: any = JSON.parse(response?.error || '');
-      //
-      //       console.log(a);
-      //
-      //       return;
-      //    }
-      //    router.replace('/painel');
-      // } catch (error) {
-      // } finally {
-      // }
+            return;
+         }
+         router.replace(redirectTo);
+      } catch (e) {
+         console.log(e);
+      }
    }
 
    return (
@@ -50,12 +37,8 @@ export default function LoginPage() {
                   <div className="text-center mb-11">
                      <h4 className="text-gray-900 fw-bold mb-3">Entrar</h4>
                      <div className="text-gray-500 fs-7">
-                        <span>Credenciamento de entidades</span>
+                        <span>Segurança em primeiro lugar</span>
                      </div>
-                  </div>
-
-                  <div className="separator separator-content my-14">
-                     <span className="w-150px text-gray-500 fw-semibold fs-9">Ou com e-mail</span>
                   </div>
 
                   <FormBuilder
@@ -64,7 +47,7 @@ export default function LoginPage() {
                         formClassName: 'gy-5 mb-3',
                         fields: [
                            {
-                              type: 'email',
+                              type: 'login',
                               accessor: 'login',
                               label: 'Email ',
                               placeholder: 'Insira seu email',
@@ -77,8 +60,13 @@ export default function LoginPage() {
                            },
                         ],
                      }}
+                     defaultValues={{
+                        login: 'epis@teste.com',
+                        password: '1q2w3e4r',
+                     }}
                      id={'login'}
                      onSubmit={onSubmit}
+                     isSubmitOnEnter
                   />
 
                   <div className="d-flex flex-stack flex-wrap gap-3 fs-base fw-semibold mb-8">

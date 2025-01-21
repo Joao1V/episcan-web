@@ -1,18 +1,31 @@
-'use client';
+import api from 'api';
 
-import { signOut, useSession } from 'next-auth/react';
+import CreateOrganization from '@/app/painel/create-organization';
 
-import api from '@/libs/axios';
-
-export default function Page() {
-   const { data, status } = useSession();
-
+export default async function Page() {
+   try {
+      const res = await api.get(
+         'restrict/organization/paginate?page=1&limit=50&order_field=created_at&order_type=DESC',
+      );
+      console.log(res);
+   } catch (e) {
+      console.log(e);
+   }
    return (
       <div>
-         <h2>Voce está {status}</h2>
-         <button type={'submit'} onClick={() => signOut()}>
-            SAIR
-         </button>
+         <div className={'container'}>
+            <CreateOrganization />
+         </div>
+         {/*<pre*/}
+         {/*   style={{*/}
+         {/*      whiteSpace: 'pre-wrap',*/}
+         {/*      wordWrap: 'break-word',*/}
+         {/*      maxHeight: '400px',*/}
+         {/*      overflow: 'auto',*/}
+         {/*   }}*/}
+         {/*>*/}
+         {/*   {JSON.stringify(data, null, 2)}*/}
+         {/*</pre>*/}
       </div>
    );
 }

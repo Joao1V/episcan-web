@@ -11,7 +11,7 @@
       "server-hydration": ["libs/server-hydration"],
       "form-builder": ["libs/form-builder"],
       "wizard-builder": ["libs/wizard-builder"],
-      "select-builder": ["libs/select-builder"],
+      "select-builder": ["libs/select-builder"]
     }
   }
 }
