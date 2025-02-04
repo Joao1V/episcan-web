@@ -7,7 +7,7 @@ const registerSchema = yup.object().shape({
    contact_mobile_phone: yup
       .string()
       .required('Informe seu número de telefone')
-      .min(11, 'Insira um número válido'),
+      .min(10, 'Insira um número válido'),
    password: yup
       .string()
       .required('Informe uma senha')

@@ -7,7 +7,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
-import FormBuilder, { useFormBuilder } from '@/libs/form-builder';
+import FormBuilder, { useFormBuilder } from 'form-builder';
 import { login } from '@/services/http/auth/login';
 
 export default function LoginPage() {

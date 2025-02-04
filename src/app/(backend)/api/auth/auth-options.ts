@@ -23,10 +23,16 @@ const authOptions: NextAuthOptions = {
       maxAge: 6000,
    },
    callbacks: {
-      async jwt({ token, user }) {
+      async jwt({ token, user, session, trigger }) {
          if (user) {
             token.user = user;
          }
+
+         if (trigger === 'update') {
+            token.user = session;
+            token.token = session.token;
+         }
+
          return token;
       },
       async session({ session, token }) {
@@ -50,8 +56,16 @@ const authOptions: NextAuthOptions = {
                   `/access/${process.env.NEXT_PUBLIC_COMPANY_IDENTIFIER}/auth`,
                   { login, password },
                );
-               if (user.object) {
-                  return user.object;
+               const me: any = await api.get('/me', null, { userToken: user.userToken });
+
+               if (me.object) {
+                  return {
+                     ...me?.object,
+                     access: {
+                        token: user.userToken,
+                     },
+                  };
+                  // return user.object;
                }
                return null;
             } catch (error: any) {

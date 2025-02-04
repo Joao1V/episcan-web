@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation';
 
 import FormBuilder, { useFormBuilder } from 'form-builder';
 
-import { registerSchema } from '@/app/registro/page.schema';
+import { registerSchema } from '@/app/(public)/registro/page.schema';
 
 import { login, registerNewUser } from '@/services/http/auth';
 
@@ -24,8 +24,8 @@ export default function Page() {
          });
          console.log(responseRegister);
          console.log(responseLogin);
-         if (responseLogin) {
-            router.replace('/painel');
+         if (responseLogin?.ok) {
+            router.replace(responseLogin.redirectTo);
          }
       } catch (e) {
          throw e;

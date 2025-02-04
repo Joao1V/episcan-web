@@ -381,8 +381,7 @@ $gutters: (
 // Font family
 
 $font-family-sans-serif: var(--primary-font-family), sans-serif !default;
-
-$font-size-base: 1.145rem !default;
+$font-size-base: 1rem !default;
 
 $font-size-lg: $font-size-base * 1.065 !default;   // 14.04px
 $font-size-xl: $font-size-base * 1.15 !default;   // 16.04px
@@ -888,13 +887,13 @@ $badge-size-lg:                 2rem !default;
 
 // Modals
 // Padding applied to the modal-builder body
-$modal-inner-padding:     					    1.75rem !default;
+$modal-inner-padding:     					    1.5rem !default;
 
 // Margin between elements in footer, must be lower than or equal to 2 * $modal-builder-inner-padding
 $modal-footer-margin-between:    				.5rem !default;
 
 $modal-dialog-margin:      				        .5rem !default;
-$modal-dialog-margin-y-sm-up:    				1.75rem !default;
+$modal-dialog-margin-y-sm-up:    				1.5rem !default;
 
 $modal-content-color:      				        null !default;
 $modal-content-bg:      				        var(--#{$prefix}body-bg) !default;

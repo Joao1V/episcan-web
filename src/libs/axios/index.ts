@@ -6,6 +6,7 @@ import { AdditionalConfig, Options, RequestParams } from './types';
 import { isClient, isServer } from './utils/constants';
 import { formatValidatorErrors } from './utils/formatValidator';
 import { getToken } from './utils/token';
+import { redirect } from 'next/navigation';
 
 const instance = axios.create({
    baseURL: process.env.NEXT_PUBLIC_API_BASE_URL_MAIN,
@@ -19,7 +20,7 @@ instance.interceptors.request.use(async (config: AdditionalConfig) => {
    }
    const token = await getToken();
 
-   config.headers['userToken'] = token;
+   config.headers['userToken'] = token || config?.userToken;
 
    return config;
 });
@@ -29,7 +30,7 @@ instance.interceptors.response.use(
       if (isClient) {
          updateToast({
             type: 'success',
-            message: 'Realizado com sucesso',
+            message: config?.data?.message || 'Realizado com sucesso',
          });
       }
 
@@ -60,8 +61,12 @@ const request = async <T, TResponse>(configs: RequestParams<T>): Promise<TRespon
       return response.data;
    } catch (err: any) {
       if (err?.response?.data?.validator) {
-         console.log('Estou no validator');
+         console.log('Estou no validator', err.response.data.formattedErrors);
          err.response.data.formattedErrors = formatValidatorErrors(err?.response.data);
+
+         if (err?.response.data?.message.includes('Token já desabilitado')) {
+            typeof window === 'undefined' && redirect('/login')
+         }
       }
 
       throw new Error(err?.response.data?.message || 'Ocorreu um erro', {

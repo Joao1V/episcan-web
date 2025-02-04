@@ -15,13 +15,14 @@ export type SubmitConfig = Pick<CommonFieldConfig, 'col' | 'showIf'> & {
          value: string | number | ((value: any) => any);
       };
    };
+   isFetching?: boolean;
 };
 const ButtonSubmit = ({ config }: FieldDefaultProps<'submit'>) => {
    const {
       formState: { isSubmitting },
    } = useFormContext();
 
-   const { text, textLoading = 'Aguarde...' } = config;
+   const { text, textLoading = 'Aguarde...', isFetching = false } = config;
 
    const { options } = config;
 
@@ -40,7 +41,7 @@ const ButtonSubmit = ({ config }: FieldDefaultProps<'submit'>) => {
    return (
       <div className={`d-flex justify-content-end`}>
          <button
-            disabled={dependentEnable() || isSubmitting}
+            disabled={dependentEnable() || isSubmitting || isFetching}
             className={`btn btn-${options?.buttonType || 'primary'} ${options?.buttonClassName || ''}`}
             type={'submit'}
          >

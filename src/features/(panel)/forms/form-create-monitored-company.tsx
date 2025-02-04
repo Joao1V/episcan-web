@@ -1,19 +1,20 @@
 'use client';
 
-import FormAddress from '@components/FormAddress';
-import { useMutation } from '@tanstack/react-query';
-import api from 'api';
 import FormBuilder, { useFormBuilder } from 'form-builder';
 import * as yup from 'yup';
+import FormAddress from '@components/FormAddress';
+import api from 'api';
+import { useMutation } from '@tanstack/react-query';
+import { useOrganization } from '@/services/queries/organization';
 
-export default function CreateOrganization() {
-   const form = useFormBuilder(['address', 'data_company']);
+export function FormCreateMonitoredCompany() {
+   const form = useFormBuilder(['data_company', 'address']);
 
    const onSubmit = async () => {
       try {
          const { isValidForm, payload } = await form.validateForms();
          if (isValidForm) {
-            const response = await api.post('/restrict/organization', payload);
+            const response = await api.post('/restrict/monitored-company', payload);
             console.log(response);
          }
       } catch (e: any) {
@@ -25,22 +26,19 @@ export default function CreateOrganization() {
       mutationFn: onSubmit,
    });
 
+   const { data: organization } = useOrganization();
    return (
-      <>
-         <h3>Criar organização</h3>
+      <div>
 
-         <div className={'mt-10'}>
-            <h4>Dados da empresa</h4>
+         <div>
+            <h4>Criando uma empresa para a organização: <span className={'text-uppercase'}>{organization?.name}</span>
+            </h4>
+
             <FormBuilder
                id={'data_company'}
                defaultValues={{
-                  name: 'empresa',
-                  juridical_fancy_name: 'razao social',
-                  cpfcnpj: '29299292929292',
-                  contact_mail: 'e@e.com',
-                  contact_mobile_phone: '67999999999',
-                  person_type: 'JURIDICA',
-                  active: true,
+                  organization_identifier: organization.identifier,
+                  person_type: 'JURIDICA'
                }}
                config={{
                   fields: [
@@ -48,30 +46,46 @@ export default function CreateOrganization() {
                         type: 'text',
                         accessor: 'name',
                         label: 'Nome da Empresa',
-                        rule: yup.string().required('Rua é obrigatória'),
+                        rule: yup.string().required('Rua é obrigatória')
                      },
                      {
                         type: 'text',
                         accessor: 'juridical_fancy_name',
-                        label: 'Razão Social',
+                        label: 'Razão Social'
                      },
                      {
                         type: 'cnpj',
                         accessor: 'cpfcnpj',
-                        label: 'CNPJ',
+                        label: 'CNPJ'
                      },
                      {
                         type: 'email',
                         accessor: 'contact_mail',
                         label: 'Email',
-                        rule: yup.string().email().required('Rua é obrigatória'),
+                        rule: yup.string().email().required('Rua é obrigatória')
                      },
                      {
                         type: 'phone-input',
                         accessor: 'contact_mobile_phone',
-                        label: 'Contato da Empresa',
+                        label: 'Contato da Empresa'
                      },
-                  ],
+                     {
+                        type: 'radio',
+                        accessor: 'scan_epi',
+                        col: 'col-12',
+                        label: 'Funcionar as cameras desas empresa?',
+                        options: [
+                           {
+                              label: 'Sim',
+                              value: true,
+                           },
+                           {
+                              label: 'Não',
+                              value: false,
+                           }
+                        ],
+                     }
+                  ]
                }}
             />
          </div>
@@ -89,7 +103,6 @@ export default function CreateOrganization() {
                }}
             />
          </div>
-
          <div className={'mt-5 d-flex justify-content-end'}>
             <button
                className={'btn btn-primary'}
@@ -99,6 +112,6 @@ export default function CreateOrganization() {
                Criar empresa
             </button>
          </div>
-      </>
+      </div>
    );
 }

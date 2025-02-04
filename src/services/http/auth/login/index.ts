@@ -16,6 +16,6 @@ export async function login(payload: Login) {
    });
    return {
       ...response,
-      redirectTo: '/painel',
+      redirectTo: '/painel/dashboard',
    };
 }

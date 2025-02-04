@@ -22,6 +22,7 @@ export const updateToast = (options: ToastProps) => {
          isLoading: false,
          hideProgressBar: false,
          draggable: true,
+         style: {fontSize: '1rem'},
       });
       toastId = null;
    }

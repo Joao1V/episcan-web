@@ -57,6 +57,7 @@ const FormBuilder: React.FC<FormBuilderProps> = (props) => {
 
    const showErrors = React.useCallback((e: any) => {
       if (e?.cause?.formattedErrors) {
+         console.log(e?.cause);
          Object.entries(e.cause.formattedErrors as Record<string, string>).forEach(
             ([key, value]) => {
                setError(key, { type: 'custom', message: value });
@@ -112,7 +113,8 @@ const FormBuilder: React.FC<FormBuilderProps> = (props) => {
                   }
                }
             });
-            props.onSubmit && (await props.onSubmit(returnedArgs));
+            await props.onSubmit(returnedArgs);
+
             if (isResetOnSubmit) {
                let resetValues: any = {};
                config.fields.forEach((item) => {

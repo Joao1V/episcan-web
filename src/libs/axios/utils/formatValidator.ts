@@ -1,5 +1,7 @@
 import { ErrorResponse, FormattedErrors } from '../types';
-
+// if (key === 'token' && messages.includes('Token não encontrado na base de dados')) {
+//
+//       }
 export const formatValidatorErrors = (response: ErrorResponse): FormattedErrors => {
    return Object.entries(response.validator).reduce((acc, [key, messages]) => {
       acc[key] = messages

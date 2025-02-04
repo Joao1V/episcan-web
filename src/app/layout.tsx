@@ -26,14 +26,16 @@ export default function RootLayoutLayoutLayout({
    return (
       <html lang="pt-BR" data-bs-theme="light">
          <body
-            id="kt_app_body"
-            data-kt-app-header-fixed-mobile="true"
-            data-kt-app-toolbar-enabled="true"
+            data-kt-sticky="true"
             cz-shortcut-listen="true"
-            data-kt-sticky-app-header-sticky="on"
-            data-kt-app-header-sticky="on"
-            data-kt-scrolltop="on"
+            data-kt-sticky-name="app-header-sticky"
+            suppressHydrationWarning
             className={`${geistSans.variable} ${geistMono.variable} app-default`}
+            // data-kt-app-header-fixed-mobile="true"
+            // data-kt-app-toolbar-enabled="true"
+            // data-kt-sticky-app-header-sticky="on"
+            // data-kt-app-header-sticky="on"
+            // data-kt-scrolltop="on"
          >
             <Providers>{children}</Providers>
          </body>

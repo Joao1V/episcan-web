@@ -14,6 +14,5 @@ export const getToken = async (): Promise<Token> => {
 };
 
 export const saveToken = (token: Token) => {
-   console.log('--->TOKEN SALVO');
    access = token;
 };

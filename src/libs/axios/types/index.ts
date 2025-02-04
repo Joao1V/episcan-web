@@ -3,11 +3,10 @@ import { InternalAxiosRequestConfig, Method } from 'axios';
 export type Options = {
    isClub?: boolean;
    isDisableToast?: boolean;
+   userToken?: string;
 };
 
-export type AdditionalConfig = InternalAxiosRequestConfig & {
-   options?: Options | null;
-};
+export type AdditionalConfig = InternalAxiosRequestConfig & Options
 
 export type RequestParams<T> = {
    method: Method;

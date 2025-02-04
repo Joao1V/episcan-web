@@ -18,7 +18,7 @@ const RenderField = (props: any) => {
       case 'select':
          return <Fields.Select config={item} />;
       case 'radio':
-         return <Fields.Radio config={item} />;
+         return <Fields.Radio {...item} />;
       case 'checkbox':
          return <Fields.Checkbox config={item} />;
       case 'select-file':

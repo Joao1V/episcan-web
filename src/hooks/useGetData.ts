@@ -7,7 +7,7 @@ import index from 'libs/axios';
 
 interface OptionsProps {
    url: string;
-   queryKey?: Array<string>;
+   queryKey?: Array<any>;
    onSuccess?: (response: any) => any | void;
    initialFn?: (serverData: any) => any | void; //A FUNCAO VAI RODAR APENAS UMA VEZ NA PRIMEIRA MONTAGEM DO COMPONENTE, O OBJETIVO PRINCIPAL É PARA FILTRAR OS DADOS QUE VIER DO SERVERDATA
    enabled?: boolean | null;
@@ -19,7 +19,7 @@ interface OptionsProps {
 }
 
 interface MyQueryOptionsProps {
-   queryKey: Array<string>;
+   queryKey: Array<any>;
    queryFn: () => Promise<any>;
    placeholderData?: any;
    enabled?: boolean;
@@ -93,5 +93,7 @@ export const useGetData = (options: OptionsProps) => {
 
    const { data, isLoading, refetch, isFetching, isError, error } = queryResult || {};
 
-   return { data, isLoading, refetch, isFetching, isError, error };
+   const isEmptyData = data?.data?.length === 0;
+
+   return { data, isLoading, refetch, isFetching, isEmptyData, isError, error };
 };

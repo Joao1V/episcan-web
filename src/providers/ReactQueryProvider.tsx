@@ -10,7 +10,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { saveToken } from '@/libs/axios/utils/token';
 
 export default function ReactQueryProvider({ children }: { children: ReactNode }) {
-   const { data: session } = useSession();
+   const { data: session, status } = useSession();
    const [queryClient] = useState(
       () =>
          new QueryClient({
@@ -27,10 +27,10 @@ export default function ReactQueryProvider({ children }: { children: ReactNode }
    );
 
    useEffect(() => {
-      if (session) {
+      if (session && status === 'authenticated') {
          saveToken(session.token);
       }
-   }, []);
+   }, [status]);
 
    return (
       <QueryClientProvider client={queryClient}>
