@@ -17,6 +17,8 @@ import * as yup from 'yup';
 // Tipo básico para um Field
 export type CommonFieldConfig = {
    accessor: string;
+   rowLabelClass?: string;
+   labelClass?: string;
    label: string | ReactNode;
    placeholder?: string;
    rule?: yup.StringSchema;

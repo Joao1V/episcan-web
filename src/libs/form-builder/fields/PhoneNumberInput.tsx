@@ -12,8 +12,8 @@ export type PhoneInputConfig = CommonFieldConfig & {
    onChange?: (data: { onlyValue: string; formattedValue: string }) => any;
 };
 
-const PhoneInput = ({ config }: FieldDefaultProps<'phone-input'>) => {
-   const { onChange, accessor } = config;
+const PhoneInput = (props: PhoneInputConfig) => {
+   const { onChange, accessor } = props;
 
    function applyMask(number: string) {
       const formatted = Masks.dynamicMaskPhone(number);

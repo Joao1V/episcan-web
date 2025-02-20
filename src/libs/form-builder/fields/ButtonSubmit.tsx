@@ -17,14 +17,14 @@ export type SubmitConfig = Pick<CommonFieldConfig, 'col' | 'showIf'> & {
    };
    isFetching?: boolean;
 };
-const ButtonSubmit = ({ config }: FieldDefaultProps<'submit'>) => {
+const ButtonSubmit = (props: SubmitConfig) => {
    const {
       formState: { isSubmitting },
    } = useFormContext();
 
-   const { text, textLoading = 'Aguarde...', isFetching = false } = config;
+   const { text, textLoading = 'Aguarde...', isFetching = false } = props;
 
-   const { options } = config;
+   const { options } = props;
 
    const dependentValue = useWatch({ name: options?.enableIf?.accessor || '' });
    const dependentEnable = () => {

@@ -16,19 +16,18 @@ const RenderField = (props: any) => {
       case 'number-format':
          return <Fields.MaskedInput {...item} />;
       case 'select':
-         return <Fields.Select config={item} />;
+         return <Fields.Select {...item} />;
+      case 'checkbox':
       case 'radio':
          return <Fields.Radio {...item} />;
-      case 'checkbox':
-         return <Fields.Checkbox config={item} />;
       case 'select-file':
-         return <Fields.SelectFile config={item} />;
+         return <Fields.SelectFile {...item} />;
       case 'google-autocomplete':
-         return <Fields.Google config={item} />;
+         return <Fields.Google {...item} />;
       case 'submit':
-         return <Fields.ButtonSubmit config={item} />;
+         return <Fields.ButtonSubmit {...item} />;
       case 'phone-input':
-         return <Fields.PhoneNumberInput config={item} />;
+         return <Fields.PhoneNumberInput {...item} />;
 
       //BR FIELDS
       case 'cnpj':

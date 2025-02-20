@@ -3,29 +3,33 @@ import qs from "qs";
 
 interface ServerQueryParams {
   url: string;
-  queryString:string;
+  search:string;
+  pathname:string;
   filters: Record<string, any>;
 
 }
 export async function getQueryParams(): Promise<ServerQueryParams> {
   const headersList = await headers();
-  const fullUrl = headersList.get("referer") || "";
+  const fullUrl = headersList.get("x-url") || "";
 
   if (!fullUrl) {
     return {
       url: "",
-      queryString: "",
+      search: "",
       filters: {},
+      pathname: ''
     };
   }
 
   const url = new URL(fullUrl);
-  const queryString = url.search; // Remove o "?"
-  const filters = qs.parse(queryString);
+  const search = url.search
+  const pathname = url.pathname;
+  const filters = qs.parse(search, {ignoreQueryPrefix: true});
 
   return {
     url: fullUrl,
-    queryString,
+    search,
     filters,
+    pathname
   };
 }

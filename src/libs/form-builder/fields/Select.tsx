@@ -1,32 +1,26 @@
 import React, { memo } from 'react';
 import { useController } from 'react-hook-form';
 
-import { CommonFieldConfig, FieldDefaultProps } from '@/libs/form-builder/types/fields';
+import { CommonFieldConfig } from '@/libs/form-builder/types/fields';
+import SelectBuilder from 'select-builder';
+import { SelectBuilderProps } from '@/libs/select-builder/types';
 
-export type SelectConfig = Omit<CommonFieldConfig, 'label' | 'placeholder'> & {
+export type SelectConfig = Omit<CommonFieldConfig, 'placeholder'> & SelectBuilderProps & {
    type: 'select';
    options: {
       label: string;
       value: string | number;
    }[];
 };
-const Select = (props: FieldDefaultProps<'select'>) => {
-   const { options, accessor } = props.config;
+const Select = (props: SelectConfig) => {
+   const { options, accessor } = props;
 
-   const {
-      field,
-      fieldState: { error },
-   } = useController({ name: accessor });
+   const fieldController = useController({ name: accessor });
 
    return (
-      <select className={'form-select'} {...field}>
-         {options.map((option, index: number) => (
-            <option key={index} value={option.value}>
-               {option.label}
-            </option>
-         ))}
-      </select>
-   );
+      <SelectBuilder fieldController={fieldController} {...props}/>
+   )
+
 };
 
 export default memo(Select);

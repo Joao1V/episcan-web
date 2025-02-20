@@ -8,6 +8,8 @@
 @import "line-awesome/dist/line-awesome/css/line-awesome.css";
 
 @import './sass/style';
+@import "./sass/my-scss/skeleton";
 
-
-
+.dropdown-toggle::after {
+  display: none !important;
+}

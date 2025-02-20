@@ -48,24 +48,25 @@ instance.interceptors.response.use(
    },
 );
 
-const request = async <T, TResponse>(configs: RequestParams<T>): Promise<TResponse> => {
+const request = async <T, TResponse>(configs: RequestParams<T>): Promise<TResponse | any> => {
    const { method, url, params, data, options = null } = configs;
    try {
       const response = await instance.request({
          method,
          url,
-         params,
          data,
-         ...options,
+         params,
+         ...(options ? options : {}),
       } as AdditionalConfig);
       return response.data;
    } catch (err: any) {
       if (err?.response?.data?.validator) {
-         console.log('Estou no validator', err.response.data.formattedErrors);
          err.response.data.formattedErrors = formatValidatorErrors(err?.response.data);
+         console.log('err.response.data.formattedErrors', err.response.data.formattedErrors);
+         console.log('err?.response.data', err?.response.data);
 
-         if (err?.response.data?.message.includes('Token já desabilitado')) {
-            typeof window === 'undefined' && redirect('/login')
+         if (err?.response.data?.message.includes('Token já desabilitado') && typeof window === 'undefined') {
+            redirect('/login')
          }
       }
 

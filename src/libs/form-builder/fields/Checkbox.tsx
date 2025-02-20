@@ -3,12 +3,19 @@ import { useController } from 'react-hook-form';
 
 import { CommonFieldConfig, FieldDefaultProps } from '../types/fields';
 
-export type CheckboxConfig = CommonFieldConfig & {
-   type: 'checkbox';
-   text: string;
+type Options = {
+   label: string;
+   value: any;
+   colClass?: string;
 };
-const Checkbox: React.FC<FieldDefaultProps<'checkbox'>> = (props) => {
-   const { accessor, text } = props.config;
+
+export type CheckboxConfig = CommonFieldConfig & {
+   text: string;
+   options: Options[];
+   isDashedStyle: boolean;
+};
+const Checkbox: React.FC<CheckboxConfig> = (props) => {
+   const { accessor, text } = props;
 
    const {
       field,

@@ -112,11 +112,13 @@ $react-select-dropdown-option-margin: 0 0;
 
   &__single-value {
     color: var(--#{$prefix}input-color);
-    margin-left: 0px;
+    margin-left: 0;
+    font-size: $input-font-size;
   }
 
   &__placeholder {
     color: var(--#{$prefix}gray-500);
+    font-size: $input-font-size;
   }
 
   &__indicator-separator {
@@ -134,7 +136,7 @@ $react-select-dropdown-option-margin: 0 0;
   }
 
   &__value-container {
-    padding: 0.775rem 3rem 0.775rem 1rem ;
+    padding: $input-padding-y $input-padding-x ;
     cursor: pointer;
   }
 
@@ -158,9 +160,10 @@ $react-select-dropdown-option-margin: 0 0;
   &__option {
     cursor: pointer;
     color: var(--#{$prefix}gray-700);
-    transition: $transition-link;
+    transition: ease-in 0.1s;
     padding: $react-select-dropdown-option-padding;
     margin: $react-select-dropdown-option-margin;
+    font-size: calc($input-font-size - 1px);
 
     &--is-selected {
       background-color: var(--#{$prefix}component-hover-bg);

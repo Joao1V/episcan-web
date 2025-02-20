@@ -4,6 +4,7 @@ import React from 'react';
 import { FormProvider, UseFormReturn, useForm } from 'react-hook-form';
 
 import { yupResolver } from '@hookform/resolvers/yup';
+import { clsx } from 'clsx';
 import * as yup from 'yup';
 
 import RenderController from './components/RenderController';
@@ -14,6 +15,7 @@ import { generateSchema } from './utils/helpers';
 export interface FormBuilderConfig {
    col?: string;
    formClassName?: string;
+   isHorizontal?: boolean;
    fields: FormField[];
    schema?: yup.ObjectSchema<any>;
 }
@@ -120,7 +122,8 @@ const FormBuilder: React.FC<FormBuilderProps> = (props) => {
                config.fields.forEach((item) => {
                   if ('accessor' in item && item.accessor) resetValues[item.accessor] = '';
                });
-               reset(resetValues);
+               //Dessa forma vai resetar o formulario para os valores padrao de quando iniciou
+               reset();
             }
          } catch (e: any) {
             console.log('FORM_BUILDER', e);
@@ -178,10 +181,15 @@ const FormBuilder: React.FC<FormBuilderProps> = (props) => {
             onSubmit={handleSubmit(onSubmit)}
             onKeyDown={handleKeyDown}
             autoComplete={'off'}
-            id={id || ''}
-            className={`row ${config?.formClassName || 'gy-3'}`}
+            id={id || undefined}
+            className={clsx(
+               {
+                  row: !config.isHorizontal,
+               },
+               config.formClassName ? `${config.formClassName}` : !config.isHorizontal ? 'gy-3' : undefined,
+            )}
          >
-            <RenderController config={config} />
+            <RenderController {...config} />
          </form>
       </FormProvider>
    );

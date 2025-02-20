@@ -21,17 +21,17 @@ export type LabelValuePair = [label: string, value: string];
 export interface SelectBuilderProps {
    options?: OptionType[];
    onChange?: (value: OptionType | null) => void;
-   error?: any;
-   accessorEdit?: string;
+   data?: any;
    url?: string;
    fieldController?: FieldControllerProps;
    keys?: LabelValuePair;
+   labelKey?: string;
+   valueKey?: string;
    isCreatable?: boolean;
-   isClub?: boolean;
    isAsyncCreatable?: boolean;
    isAsync?: boolean;
+   isLoading?: boolean;
    disableInitialSearch?: boolean;
    disableSearchQuery?: boolean;
-   defaultValuesForm?: any;
    onClickOption?: (value: OptionType) => OptionType | Promise<OptionType>;
 }

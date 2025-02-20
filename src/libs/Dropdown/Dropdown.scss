@@ -1,0 +1,51 @@
+$primary-color: #3b82f6;
+$background-color: #ffffff;
+$border-color: #e5e7eb;
+$text-color: #374151;
+$shadow-color: rgba(0, 0, 0, 0.1);
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+  
+  &__trigger {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    background-color: $background-color;
+    border: 1px solid $border-color;
+    border-radius: 0.5rem;
+    color: $text-color;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      border-color: $primary-color;
+    }
+  }
+  
+  &__icon {
+    transition: transform 0.2s ease;
+    
+    &--open {
+      transform: rotate(180deg);
+    }
+  }
+  
+  &__content {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    left: 0;
+    min-width: 200px;
+    background-color: $background-color;
+    border: 1px solid $border-color;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px -1px $shadow-color, 
+                0 2px 4px -1px $shadow-color;
+    padding: 0.5rem;
+    z-index: 50;
+  }
+}

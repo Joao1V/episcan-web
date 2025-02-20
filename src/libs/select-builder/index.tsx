@@ -1,8 +1,13 @@
-import { SetStateAction, useMemo, useState } from 'react';
-import Select from 'react-select';
-import AsyncSelect from 'react-select/async';
-import AsyncCreatableSelect from 'react-select/async-creatable';
-import CreatableSelect from 'react-select/creatable';
+'use client';
+
+import React, {  useMemo, useState } from 'react';
+
+const loadingSkeleton = () => <div className="skeleton h-40px w-100"></div>;
+
+const Select = dynamic(() => import('react-select'), { ssr: false, loading: loadingSkeleton });
+const AsyncSelect = dynamic(() => import('react-select/async'), { ssr: false, loading: loadingSkeleton });
+const AsyncCreatableSelect = dynamic(() => import('react-select/async-creatable'), { ssr: false, loading: loadingSkeleton });
+const CreatableSelect = dynamic(() => import('react-select/creatable'), { ssr: false, loading: loadingSkeleton });
 
 import dynamic from 'next/dynamic';
 
@@ -11,7 +16,7 @@ import api from 'api';
 import { KTIcon } from 'kt-icon';
 import { debounce, isObject } from 'lodash';
 
-import { FieldControllerProps, LabelValuePair, OptionType, SelectBuilderProps } from './types';
+import { LabelValuePair, OptionType, SelectBuilderProps } from './types';
 import { useGetData } from '@/hooks/useGetData';
 
 const isValidLabelValuePair = (pair: LabelValuePair): boolean => {
@@ -19,20 +24,19 @@ const isValidLabelValuePair = (pair: LabelValuePair): boolean => {
    return label.trim() !== '' && value.trim() !== '';
 };
 
-const _SelectBuilder: React.FC<SelectBuilderProps> = (props) => {
+const SelectBuilder: React.FC<SelectBuilderProps> = (props) => {
    const queryClient = useQueryClient();
-   const [options, setOptions] = useState<OptionType[]>(props.options || []);
    const [disableInitialSearch, setDisableInitialSearch] = useState<boolean>(
       props.disableInitialSearch || false,
    );
 
-   if (props?.keys && !isValidLabelValuePair(props?.keys)) {
+   if (props?.keys && props?.keys?.length !== 2) {
       throw new Error(
-         "A prop 'keys' deve ser uma tupla válida contendo um 'label' e um 'value' não vazios.",
+         "Coloca o nome dos campos que você quer mostrar. Ex: ['label', 'value'] -> ['name', 'id']",
       );
    }
 
-   const { isLoading } =
+   const { isLoading} =
       props.url ?
          useGetData({
             queryKey: [`${props.url}/select`],
@@ -60,6 +64,15 @@ const _SelectBuilder: React.FC<SelectBuilderProps> = (props) => {
                });
             }
          });
+      } else if (value?.length > 0) {
+         value.forEach((item: any) => {
+            if (props.keys) {
+               aux.push({
+                  label: item[props.keys[0]],
+                  value: item[props.keys[1]],
+               });
+            }
+         });
       } else {
          value?.object?.forEach((item: any) => {
             if (props.keys) {
@@ -70,7 +83,6 @@ const _SelectBuilder: React.FC<SelectBuilderProps> = (props) => {
             }
          });
       }
-      setOptions(aux);
       return aux;
    };
 
@@ -85,33 +97,6 @@ const _SelectBuilder: React.FC<SelectBuilderProps> = (props) => {
          return filterOptions(result);
       } catch (e) {}
    };
-
-   const memoizedOptions = useMemo(() => {
-      const cachedData = (queryClient.getQueryData([`${props.url}/select`]) || []) as OptionType[];
-
-      if (props.defaultValuesForm && props?.accessorEdit) {
-         if (isObject(props?.defaultValuesForm[props?.accessorEdit]) && props.keys?.length) {
-            let aux: OptionType = {
-               label: props?.defaultValuesForm[props?.accessorEdit][props.keys[0]],
-               value: props?.defaultValuesForm[props?.accessorEdit][props.keys[1]],
-            };
-
-            let existingOption = cachedData.find((c) => {
-               return c.value === props?.fieldController?.field.value;
-            });
-            if (!existingOption) {
-               cachedData.unshift(aux);
-            }
-         }
-      }
-
-      if (options.length === 0 && cachedData.length > 0) {
-         return cachedData;
-      }
-
-      return options;
-   }, [options, queryClient, props.defaultValuesForm, props]);
-
    const handleCreate = async (inputValue: string) => {
       const aux: OptionType[] = memoizedOptions;
       const newOption: OptionType = { label: inputValue, value: inputValue };
@@ -131,8 +116,7 @@ const _SelectBuilder: React.FC<SelectBuilderProps> = (props) => {
       } catch (e) {}
    };
 
-   const updateOptions = (newOptions: SetStateAction<OptionType[]>) => {
-      setOptions(newOptions);
+   const updateOptions = (newOptions: OptionType[]) => {
    };
 
    const handleChange = (val: OptionType | null) => {
@@ -145,7 +129,7 @@ const _SelectBuilder: React.FC<SelectBuilderProps> = (props) => {
    const updateCachedData = async (results: any) => {
       let filterBy = [`${props.url}/select`];
 
-      await queryClient.setQueryData(filterBy, () => {
+      queryClient.setQueryData(filterBy, () => {
          let newValue = [...results];
 
          results = newValue;
@@ -178,25 +162,53 @@ const _SelectBuilder: React.FC<SelectBuilderProps> = (props) => {
       debouncedSearch(query, callback);
    };
 
-   const commonProps = {
-      className: 'react-select-styled',
-      classNamePrefix: 'react-select',
-      classNames: {
-         control: () =>
-            props.fieldController?.formState.errors[props?.fieldController?.field?.name] ?
-               'border-danger'
-            :  '',
-         input: () => 'min-w-100px',
-      },
-      noOptionsMessage: () => (disableInitialSearch ? 'Digite para buscar' : 'Nenhum resultado'),
-      placeholder: 'Selecione...',
-      value: memoizedOptions.find((c) => c.value === props?.fieldController?.field.value) || null,
-      options: memoizedOptions,
-      ref: props.fieldController?.field.ref || null,
-      ...props,
-   };
+   const memoizedOptions = useMemo<OptionType[]>(() => {
+      const cachedData = (queryClient.getQueryData([`${props.url}/select`]) || []) as OptionType[];
 
-   if (props.url && isLoading) {
+      if (cachedData.length > 0) {
+         return cachedData;
+      }
+      if (props?.options && props.keys) {
+         if (
+            props?.options?.length > 0 &&
+            ((props.keys.length > 0) || props.labelKey || props.valueKey)
+         ) {
+            const a: any = [];
+            const [label, value] = props.keys;
+
+            props?.options.forEach((item: any) => {
+               a.push({
+                  label: item[label],
+                  value: item[value],
+               })
+            });
+            return a
+         }
+      }
+   }, [queryClient, props]);
+
+   const commonProps = useMemo(
+      () => ({
+         className: 'react-select-styled',
+         classNamePrefix: 'react-select',
+         classNames: {
+            control: () =>
+               props.fieldController?.formState.errors[props?.fieldController?.field?.name] ?
+                  'border-danger'
+               :  '',
+            input: () => 'min-w-100px',
+         },
+         noOptionsMessage: () => (disableInitialSearch ? 'Digite para buscar' : 'Nenhum resultado'),
+         placeholder: 'Selecione...',
+         value:
+            memoizedOptions?.find((c) => c.value === props?.fieldController?.field.value) || null,
+         options: memoizedOptions,
+         ref: props.fieldController?.field.ref || null,
+      }),
+      [props],
+   );
+
+   if (props.url || isLoading || props.isLoading) {
       return <div className="skeleton h-40px w-100"></div>;
    }
 
@@ -216,7 +228,6 @@ const _SelectBuilder: React.FC<SelectBuilderProps> = (props) => {
                   </div>
                )}
                onCreateOption={handleCreate}
-               loadingMessage={() => 'Buscando...'}
                {...commonProps}
             />
          </>
@@ -252,12 +263,10 @@ const _SelectBuilder: React.FC<SelectBuilderProps> = (props) => {
             props.fieldController &&
             props?.fieldController.field.onChange(val ? (val as OptionType).value : null)
          }
+         menuPlacement={'auto'}
          {...commonProps}
       />
    );
 };
 
-const SelectBuilder = dynamic(() => Promise.resolve(_SelectBuilder), {
-   ssr: false,
-});
 export default SelectBuilder;
