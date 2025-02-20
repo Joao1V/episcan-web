@@ -4,14 +4,14 @@ interface ModalStore {
    modal: {
       [key: string]: boolean;
    };
-   registerModal: (key:string) => void
+   registerModal: (key:string, initialValue:boolean) => void
    setModal: (key:string, isShow: boolean) => void
    removeModal: (key:string) => void
 }
 
 export const modalStore = create<ModalStore>((set) => ({
    modal: {},
-   registerModal: (key) => set(() => ({ modal: { [key]: false } })),
+   registerModal: (key, initialValue) => set(() => ({ modal: { [key]: (initialValue || false) } })),
    removeModal: (key) => set((state) => {
       delete state.modal[key];
 

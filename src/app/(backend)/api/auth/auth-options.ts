@@ -70,15 +70,9 @@ const authOptions: NextAuthOptions = {
                return null;
             } catch (error: any) {
                if (error) {
-                  throw new Error(
-                     JSON.stringify({
-                        message: error.message,
-                        errors: error.response.data,
-                     }),
-                     {
-                        cause: error,
-                     },
-                  );
+                  throw new Error(error.message, {
+                     cause: error.cause,
+                  });
                }
             }
          },

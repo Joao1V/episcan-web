@@ -6,10 +6,10 @@ import * as yup from 'yup';
 
 import { useModal } from '@/hooks';
 import { useOrganizationInvitePaginate } from '@/services/queries/organization/organization-invite-paginate';
-import { MODAL_ORGANIZATION_KEYS } from '@/features/(panel)/modal/modalKeys';
+import { MODAL_PANEL_KEYS } from '@/features/(panel)/modal/modalKeys';
 
 export function ModalOrganizationAddUser(props) {
-   const { setModal, isShow } = useModal(MODAL_ORGANIZATION_KEYS.ADD_USER);
+   const { setModal, isShow } = useModal(MODAL_PANEL_KEYS.ADD_USER);
    const { refetch } = useOrganizationInvitePaginate({enabled: false});
 
 

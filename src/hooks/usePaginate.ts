@@ -1,33 +1,57 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 
-import { paginateStore } from '@/store/paginateStore';
-
-interface UsePaginate {
-   filtersKey: string;
-   initialParams: {
-      [key: string]: any;
-   };
+interface PaginationDefault {
+   page: number;
+   limit: number;
+   search_global?: string;
+   order_type?: 'ASC' | 'DESC';
 }
-export const usePaginate = (props: UsePaginate) => {
-   const { filtersKey, initialParams } = props;
-   const { paginate, setFilter, removeFilters, registerFilters } = paginateStore();
+type PaginationParams<TFilters> = PaginationDefault & TFilters;
 
-   useEffect(() => {
-      registerFilters(filtersKey, initialParams);
-      return () => {
-         removeFilters(filtersKey);
-      };
-   }, []);
+interface UsePaginateOptions<TFilters> {
+   initialFilters: PaginationParams<TFilters>;
+}
 
-   const _setFilter = (key: string, value: any) => {
-      const aux = {
-         ...paginate[filtersKey],
-         [key]: value,
-      };
-      setFilter(props.filtersKey, aux);
+interface UsePaginateReturn<TFilters> {
+   paginate: PaginationParams<TFilters>;
+   updateFilterValue: (label: keyof TFilters | string, value: any) => void;
+   updateFilters: (newFilters: TFilters) => void;
+}
+
+function usePaginate<TFilters extends object>(
+   filterKey: string,
+   options?: UsePaginateOptions<TFilters>,
+): UsePaginateReturn<TFilters> {
+   const { initialFilters: initialData } = options || {};
+
+   const queryClient = useQueryClient();
+   const queryKey = ['filters_paginates', filterKey];
+
+   const { data: storedData } = useSuspenseQuery<PaginationParams<TFilters>>({
+      queryKey,
+      initialData,
+   });
+
+   const updateFilterValue = (label: keyof TFilters | string, value: any) => {
+      queryClient.setQueryData(queryKey, (oldData: PaginationParams<TFilters>) => ({
+         ...oldData,
+         [label]: value,
+      }));
    };
 
-   return { filters: paginate[filtersKey] || initialParams, setFilter: _setFilter };
-};
+   const updateFilters = (newFilters: TFilters) => {
+      queryClient.setQueryData(queryKey, (oldData: any) => {
+         return {
+            ...oldData,
+            newFilters,
+         };
+      });
+   };
+
+   return { paginate: storedData, updateFilterValue, updateFilters };
+}
+
+export { usePaginate };
+export type { PaginationParams, PaginationDefault };

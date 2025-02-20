@@ -1,5 +1,7 @@
 'use client';
 
+import { useMemo } from 'react';
+
 import { usePathname, useRouter } from 'next/navigation';
 
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
@@ -8,13 +10,13 @@ import index from 'libs/axios';
 interface OptionsProps {
    url: string;
    queryKey?: Array<any>;
+   filterKey?: string ;
    onSuccess?: (response: any) => any | void;
    initialFn?: (serverData: any) => any | void; //A FUNCAO VAI RODAR APENAS UMA VEZ NA PRIMEIRA MONTAGEM DO COMPONENTE, O OBJETIVO PRINCIPAL É PARA FILTRAR OS DADOS QUE VIER DO SERVERDATA
    enabled?: boolean | null;
    params?: object | any;
    serverData?: any;
    isKeepPrevious?: boolean;
-   isClub?: boolean;
    isQueryString?: boolean;
 }
 
@@ -26,16 +28,27 @@ interface MyQueryOptionsProps {
    initialData?: any;
 }
 
-export const useGetData = (options: OptionsProps) => {
+export type GetDataResponse = {
+   data: any;
+   filterKey: string ;
+   error: unknown | null;
+   isEmptyData: boolean;
+   isError: boolean;
+   isFetching: boolean;
+   isLoading: boolean;
+   refetch: () => void;
+};
+
+export const useGetData = (options: OptionsProps): GetDataResponse => {
    let {
       url,
       queryKey,
+      filterKey = '',
       isKeepPrevious,
       onSuccess,
       initialFn,
       enabled = null,
       params,
-      isClub,
       isQueryString,
       serverData,
    } = options;
@@ -52,7 +65,7 @@ export const useGetData = (options: OptionsProps) => {
             // router.push(`${pathname}${searchParams}`);
          }
 
-         let response = await index.get(url, params, { isClub: isClub });
+         let response = await index.get(url, params);
 
          if (onSuccess) {
             let aux: any = await onSuccess(response || null);
@@ -67,33 +80,34 @@ export const useGetData = (options: OptionsProps) => {
       }
    };
 
-   const queryOptions: MyQueryOptionsProps = {
-      queryKey: queryKey || [url],
-      queryFn: getDataFn,
-      placeholderData: isKeepPrevious ? keepPreviousData : undefined,
-      enabled: enabled === null ? true : enabled,
-      ...(serverData ?
-         {
-            initialData:
-               initialFn ?
-                  () => {
-                     let aux = initialFn(serverData);
-                     if (aux) {
-                        return aux;
-                     } else {
-                        return serverData;
+   const queryOptions: MyQueryOptionsProps = useMemo(
+      () => ({
+         queryKey: queryKey || [url],
+         queryFn: getDataFn,
+         placeholderData: isKeepPrevious ? keepPreviousData : undefined,
+         enabled: enabled === null ? true : enabled,
+         ...(serverData ?
+            {
+               initialData:
+                  initialFn ?
+                     () => {
+                        let aux = initialFn(serverData);
+                        if (aux) {
+                           return aux;
+                        } else {
+                           return serverData;
+                        }
                      }
-                  }
-               :  serverData,
-         }
-      :  {}),
-   };
+                  :  serverData,
+            }
+         :  {}),
+      }),
+      [options],
+   );
 
-   const queryResult = useQuery(queryOptions);
-
-   const { data, isLoading, refetch, isFetching, isError, error } = queryResult || {};
+   const { data, isLoading, refetch, isFetching, isError, error } = useQuery(queryOptions);
 
    const isEmptyData = data?.data?.length === 0;
 
-   return { data, isLoading, refetch, isFetching, isEmptyData, isError, error };
+   return { data, isLoading, refetch, isFetching, isEmptyData, isError, error, filterKey };
 };

@@ -3,53 +3,46 @@
 import React from 'react';
 
 import logo from '@images/next.svg';
+import { signIn } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
-import FormBuilder, { useFormBuilder } from 'form-builder';
+import api from 'api';
+import FormBuilder from 'form-builder';
+import md5 from 'md5';
+import moment from 'moment-timezone';
 
 import { registerSchema } from '@/app/(public)/registro/page.schema';
-
-import { login, registerNewUser } from '@/services/http/auth';
 
 export default function Page() {
    const router = useRouter();
    async function onSubmit(args) {
       try {
-         const responseRegister = await registerNewUser(args);
-         const responseLogin = await login({
+         const payloadRegister = { ...args };
+
+         payloadRegister.password = md5(payloadRegister.password);
+         payloadRegister.timezone = moment.tz.guess();
+
+         await api.post(
+            `/access/${process.env.NEXT_PUBLIC_COMPANY_IDENTIFIER}/customer/sign-up`,
+            payloadRegister,
+         );
+
+
+         const responseLogin = await signIn('credentials', {
             login: args.contact_mail,
-            password: `${args.password}`,
+            password: payloadRegister.password,
+            redirect: false,
          });
-         console.log(responseRegister);
-         console.log(responseLogin);
+
          if (responseLogin?.ok) {
-            router.replace(responseLogin.redirectTo);
+            router.replace('/painel/dashboard');
          }
       } catch (e) {
-         throw e;
+         console.log('cai no catch?', e);
+         throw new Error(e.message, { cause: e.cause });
       }
-
-      return;
-      // try {
-      //    const response = await signIn('credentials', {
-      //       login: args?.login,
-      //       password: args?.password,
-      //       redirect: false,
-      //    });
-      //
-      //    if (response?.error) {
-      //       const a: any = JSON.parse(response?.error || '');
-      //
-      //       console.log(a);
-      //
-      //       return;
-      //    }
-      //    router.replace('/painel');
-      // } catch (error) {
-      // } finally {
-      // }
    }
 
    return (

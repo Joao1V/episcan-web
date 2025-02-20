@@ -1,14 +1,16 @@
 'use client';
 
-import { useState } from 'react';
+
+import Link from 'next/link';
 
 export default function Page() {
-   const [testando, setTestando] = useState();
+
    return (
       <>
          <h3 className={'ff-secondary'}>
              Home page
          </h3>
+         <Link href={'/painel/dashboard'}>Ir para painel</Link>
       </>
    );
 }

@@ -1,26 +1,32 @@
 import { create } from 'zustand/index';
 
+
+
+
+
 interface PaginateStore {
    paginate: {
-      [key: string]: any;
+      [key: string]: {
+         [key: string]: any
+      };
    };
-   registerFilters: (key: string, initialParams: any) => void;
-   setFilter: (key: string, params: any) => void;
-   removeFilters: (key: string) => void;
+   register: (key: string, defaultValue: any) => void;
+   setFilter: (key: string, value: any) => void;
+   unmount: (key: string) => void;
 }
 
 export const paginateStore = create<PaginateStore>((set) => ({
    paginate: {},
-   registerFilters: (key, initialParams) => set(() => ({ paginate: { [key]: initialParams } })),
-   removeFilters: (key) =>
+   register: (key, defaultValue) => set(() => ({ paginate: { [key]: defaultValue } })),
+   unmount: (key) =>
       set((state) => {
          delete state.paginate[key];
 
          return state;
       }),
-   setFilter: (key, params) =>
+   setFilter: (key, value) =>
       set(() => {
-         console.log(key, params);
-         return { paginate: { [key]: params } };
+         console.log(key, value);
+         return { paginate: { [key]: value } };
       }),
 }));

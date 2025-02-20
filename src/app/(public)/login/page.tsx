@@ -1,31 +1,38 @@
 'use client';
 
 import React from 'react';
+import { toast } from 'react-toastify';
 
 import logo from '@images/next.svg';
+import { signIn } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 import FormBuilder, { useFormBuilder } from 'form-builder';
-import { login } from '@/services/http/auth/login';
+import md5 from 'md5';
 
 export default function LoginPage() {
    const router = useRouter();
    const { onValidateForm, isSubmitting } = useFormBuilder('login');
    async function onSubmit(args: any) {
-      try {
-         const { redirectTo, error } = await login(args);
-         if (error) {
-            const a: any = JSON.parse(error || '');
+      args.password = md5(args.password);
+      const { login, password } = args;
 
-            console.log(a);
-
+      const response = await signIn('credentials', {
+         login,
+         password,
+         redirect: false,
+      });
+      if (response) {
+         console.log(response);
+         const { error, ok } = response;
+         if (!ok) {
+            console.log(error);
+            toast.error(error, { hideProgressBar: false, position: 'bottom-right' });
             return;
          }
-         router.replace(redirectTo);
-      } catch (e) {
-         console.log(e);
+         router.replace('/painel/dashboard');
       }
    }
 
@@ -61,12 +68,13 @@ export default function LoginPage() {
                         ],
                      }}
                      defaultValues={{
-                        login: 'epis@teste.com',
+                        login: 'admin@semalo.com',
                         password: '1q2w3e4r',
                      }}
                      id={'login'}
                      onSubmit={onSubmit}
                      isSubmitOnEnter
+                     isResetOnSubmit={false}
                   />
 
                   <div className="d-flex flex-stack flex-wrap gap-3 fs-base fw-semibold mb-8">

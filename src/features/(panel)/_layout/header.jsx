@@ -3,15 +3,18 @@
 import { useEffect, useRef, useState } from 'react';
 
 import { signOut, useSession } from 'next-auth/react';
+import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
+import avatar from '@images/vercel.svg';
+import { useQueryClient } from '@tanstack/react-query';
 import { clsx } from 'clsx';
 import { motion, useInView, useMotionValueEvent, useScroll } from 'motion/react';
 
-import { removeAttribute, setAttribute } from '@/libs/helpers/setAtributte';
 import { useMenu } from '@/features/(panel)/menu';
-import { useRouter } from 'next/navigation';
-import Image from 'next/image';
+import { Dropdown } from '@/libs/dropdown-builder';
+import { removeAttribute, setAttribute } from '@/libs/helpers/setAtributte';
 
 const attributes = {
    'data-kt-app-header-sticky': 'on',
@@ -29,6 +32,7 @@ export function Header() {
    const isInView = useInView(ref);
    const elementInViewRef = useRef(true);
    const router = useRouter();
+   const queryClient = useQueryClient();
 
    useMotionValueEvent(scrollY, 'change', (latest) => {
       if (latest <= 85 && !elementInViewRef.current) {
@@ -94,36 +98,32 @@ export function Header() {
             <div className="d-flex align-items-stretch justify-content-between flex-lg-grow-1">
                <div className="app-header-menu app-header-mobile-drawer align-items-stretch">
                   <div className="menu menu-rounded menu-active-bg menu-state-primary menu-column menu-lg-row menu-title-gray-700 menu-icon-gray-500 menu-arrow-gray-500 menu-bullet-gray-500 my-5 my-lg-0 align-items-stretch fw-semibold px-2 px-lg-0">
-                     {menu.routes.map((route, key) => (
-                        <div
-                           key={key}
-                           className={`${clsx('menu-item me-0 me-lg-2', {
-                              'here show': route.active,
-                           })} `}
-                        >
-                           <span className="menu-link">
-                              <Link className="menu-title" href={`${menu.basePath}${route.href}`}>
-                                 {route.name}
-                              </Link>
-                              <span className="menu-arrow d-lg-none" />
-                           </span>
-                        </div>
-                     ))}
+                     {/*{menu.routes.map((route, key) => (*/}
+                     {/*   <div*/}
+                     {/*      key={key}*/}
+                     {/*      className={`${clsx('menu-item me-0 me-lg-2', {*/}
+                     {/*         'here show': route.active,*/}
+                     {/*      })} `}*/}
+                     {/*   >*/}
+                     {/*      <span className="menu-link">*/}
+                     {/*         <Link className="menu-title" href={`${menu.basePath}${route.href}`}>*/}
+                     {/*            {route.name}*/}
+                     {/*         </Link>*/}
+                     {/*         <span className="menu-arrow d-lg-none" />*/}
+                     {/*      </span>*/}
+                     {/*   </div>*/}
+                     {/*))}*/}
                   </div>
                </div>
 
                <div className="app-navbar flex-shrink-0">
                   <div className="app-navbar-item ms-1 ms-lg-5">
-                     <div
-                        className="btn btn-icon btn-custom btn-active-color-primary w-35px h-35px w-md-40px h-md-40px"
-                     >
+                     <div className="btn btn-icon btn-custom btn-active-color-primary w-35px h-35px w-md-40px h-md-40px">
                         <i className="ki-outline ki-calendar fs-4" />
                      </div>
                   </div>
                   <div className="app-navbar-item ms-1 ms-lg-5">
-                     <div
-                        className="btn btn-icon btn-custom btn-active-color-primary w-35px h-35px w-md-40px h-md-40px"
-                     >
+                     <div className="btn btn-icon btn-custom btn-active-color-primary w-35px h-35px w-md-40px h-md-40px">
                         <i className="ki-outline ki-abstract-26 fs-4" />
                      </div>
                   </div>
@@ -135,23 +135,33 @@ export function Header() {
                         <i className="ki-outline ki-notification-on fs-4" />
                      </div>
                   </div>
-                  {/*<div className="app-navbar-item ms-5" id="kt_header_user_menu_toggle">*/}
-                  {/*   <div*/}
-                  {/*      className="cursor-pointer symbol symbol-35px symbol-md-40px"*/}
-                  {/*   >*/}
-                  {/*      <img*/}
-                  {/*         className="symbol symbol-circle symbol-35px symbol-md-40px"*/}
-                  {/*         src="/metronic8/demo34/assets/media/avatars/300-13.jpg"*/}
-                  {/*         alt="user"*/}
-                  {/*      />*/}
-                  {/*   </div>*/}
-                  {/*</div>*/}
-                  <button onClick={async() => {
-                     await signOut({redirect: false});
-                     router.replace('/login');
-                  }}>
-                     sair
-                  </button>
+                  <div className={'app-navbar-item ms-5'}>
+                     <Dropdown >
+                        <Dropdown.Toggle className="cursor-pointer symbol symbol-35px symbol-md-40px">
+                           <Image
+                              className="symbol symbol-circle symbol-35px symbol-md-40px"
+                              src={avatar}
+                              width={50}
+                              height={50}
+                              alt="user"
+                           />
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu>
+                           <Dropdown.Item href={'/painel/criar-empresa'}>
+                              Nova empresa
+                           </Dropdown.Item>
+                           <Dropdown.Item
+                              onClick={async () => {
+                                 await signOut({ redirect: true });
+                                 await queryClient.clear();
+                                 // router.replace('/login');
+                              }}
+                           >
+                              Sair
+                           </Dropdown.Item>
+                        </Dropdown.Menu>
+                     </Dropdown>
+                  </div>
                </div>
             </div>
          </div>

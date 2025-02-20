@@ -9,8 +9,10 @@ export function useOrganization(): { [key: string]: any } {
    // queryClient.setQueryData(['active-organization'], () => organizationList?.data?.length > 0 ? organizationList.data[0] : {});
    // const data = queryClient.getQueryData(['active-organization']);
    const { data } = useQuery({
-      queryKey: ['active-organization'],
+      queryKey: [QUERY_KEYS.ACTIVE_ORGANIZATION],
       initialData: organizationList?.data?.length > 0 ? organizationList.data[0] : {},
+
+      enabled: false,
    });
 
    return { data };

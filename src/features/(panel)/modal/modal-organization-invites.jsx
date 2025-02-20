@@ -2,10 +2,10 @@ import { ModalBuilder } from '@components/ui';
 
 import { useModal } from '@/hooks';
 import { TableOrganizationInvites } from '@/features/(panel)/table/table-organization-invites';
-import { MODAL_ORGANIZATION_KEYS } from '@/features/(panel)/modal/modalKeys';
+import { MODAL_PANEL_KEYS } from '@/features/(panel)/modal/modalKeys';
 
 export function ModalOrganizationInviteUser() {
-   const { setModal, isShow } = useModal(MODAL_ORGANIZATION_KEYS.INVITE_USER);
+   const { setModal, isShow } = useModal(MODAL_PANEL_KEYS.INVITE_USER);
 
 
    return (

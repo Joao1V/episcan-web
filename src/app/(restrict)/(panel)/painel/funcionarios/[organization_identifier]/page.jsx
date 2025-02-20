@@ -1,7 +1,7 @@
 'use client';
 
 import {
-   MODAL_ORGANIZATION_KEYS
+   MODAL_PANEL_KEYS
 } from '@/features/(panel)/modal/modalKeys';
 import { ModalOrganizationAddUser } from '@/features/(panel)/modal/modal-organization-add-user';
 import { ModalOrganizationInviteUser } from '@/features/(panel)/modal/modal-organization-invites';
@@ -11,20 +11,25 @@ import { useOrganization } from '@/services/queries/organization';
 import { useOrganizationUsersPaginate } from '@/services/queries/organization/organization-users-paginate';
 import { useModal } from '@/hooks';
 
-export default function Page() {
+export default function Page(props) {
    const { data: organization } = useOrganization();
    const { data: organizationUsers } = useOrganizationUsersPaginate(
       organization.identifier,
    );
-   const modalOrganizationAddUser = useModal(MODAL_ORGANIZATION_KEYS.ADD_USER);
-   const modalOrganizationInviteUser = useModal(MODAL_ORGANIZATION_KEYS.INVITE_USER);
+   const modalOrganizationAddUser = useModal(MODAL_PANEL_KEYS.ADD_USER);
+   const modalOrganizationInviteUser = useModal(MODAL_PANEL_KEYS.INVITE_USER);
 
    return (
       <div className="row g-8">
          <div className="col-12">
-            <div className={'d-flex align-items-center justify-content-between'}>
-               <div className={'d-flex align-items-center'}>
-                  <h5 className="fw-bold me-5 my-1">Usuários ({organizationUsers?.total})</h5>
+            <div className="d-flex flex-wrap flex-stack ">
+               <div className={'d-flex flex-center gap-2'}>
+                  <h3 className="fw-bold my-2 fs-5">
+                     Usuários
+                     <span className="fs-7 text-gray-500 fw-semibold ms-1">
+                     ({organizationUsers?.total})
+                  </span>
+                  </h3>
                   <div className="d-flex align-items-center position-relative my-1">
                      <i className="ki-outline ki-magnifier fs-5 position-absolute ms-3" />
                      <input
@@ -34,6 +39,7 @@ export default function Page() {
                      />
                   </div>
                </div>
+
                <div className="d-flex flex-wrap my-1">
                   <button
                      className="btn btn-sm btn-light btn-color-muted btn-active-primary"
@@ -52,9 +58,10 @@ export default function Page() {
                      Adicionar usuário
                   </button>
                </div>
-               <ModalOrganizationInviteUser organizationIdentifier={organization.identifier} />
-               <ModalOrganizationAddUser organizationIdentifier={organization.identifier} />
             </div>
+
+            <ModalOrganizationInviteUser organizationIdentifier={organization.identifier} />
+            <ModalOrganizationAddUser organizationIdentifier={organization.identifier} />
          </div>
 
          <div className="col-12">

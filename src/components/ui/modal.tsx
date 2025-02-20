@@ -4,6 +4,7 @@ import { Modal } from 'react-bootstrap';
 interface ModalBuilderProps {
    title?: any;
    closeButton?: boolean;
+   centered?: boolean;
    children: ReactNode;
    size?: 'sm' | 'lg' | 'xl';
    show: boolean;
@@ -14,22 +15,38 @@ interface ModalBuilderProps {
 }
 
 export const ModalBuilder: React.FC<ModalBuilderProps> = (props) => {
-   const { title, children, size, show, setModal, bodyClassName, backdrop, footer } = props;
+   const {
+      title,
+      children,
+      size,
+      show,
+      centered = true,
+      setModal,
+      bodyClassName,
+      backdrop,
+      footer,
+   } = props;
    return (
-      <Modal size={size} show={show} onHide={() => setModal(false)} centered backdrop={backdrop}>
+      <Modal
+         size={size}
+         show={show}
+         onHide={() => setModal(false)}
+         centered={centered}
+         backdrop={backdrop}
+      >
          {title && (
-            <Modal.Header>
-               {!backdrop && (
-                  <div className={'position-absolute end-0 border-0 z-index-1 '}>
-                     <button
-                        type="button"
-                        style={{ backgroundSize: 14, width: '2rem', height: '2rem' }}
-                        onClick={() => setModal(false)}
-                        className="btn-close m-0"
-                        aria-label="Close"
-                     ></button>
-                  </div>
-               )}
+            <Modal.Header closeButton={!backdrop}>
+               {/*{!backdrop && (*/}
+               {/*   <div className={'position-absolute end-0 border-0 z-index-1 '}>*/}
+               {/*      <button*/}
+               {/*         type="button"*/}
+               {/*         style={{ backgroundSize: 14, width: '2rem', height: '2rem' }}*/}
+               {/*         onClick={() => setModal(false)}*/}
+               {/*         className="btn-close m-0"*/}
+               {/*         aria-label="Close"*/}
+               {/*      ></button>*/}
+               {/*   </div>*/}
+               {/*)}*/}
                <Modal.Title>{title}</Modal.Title>
             </Modal.Header>
          )}

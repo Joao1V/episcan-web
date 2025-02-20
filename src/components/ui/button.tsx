@@ -15,6 +15,7 @@ interface ButtonProps {
    className?: string;
    children: React.ReactNode;
    type?: 'button' | 'submit' | 'reset';
+   size?: 'sm' | 'lg' | 'xl';
    variant?: Variants;
    disabled?: boolean;
    tooltip?: ITooltip;
@@ -28,6 +29,7 @@ export const Button: React.FC<ButtonProps> = (props) => {
       type,
       tooltip,
       variant = 'primary',
+      size,
       onClick,
       disabled,
       className,
@@ -40,6 +42,7 @@ export const Button: React.FC<ButtonProps> = (props) => {
             clsx('btn', {
                ['btn-outline']: variant.includes('outline'),
                [`btn-${variant}`]: variant,
+               [`btn-${size}`]: size,
             })
          }
          id={

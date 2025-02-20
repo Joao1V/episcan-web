@@ -1,0 +1,1 @@
+export { useEpiPaginate } from './epi-item-paginate';
