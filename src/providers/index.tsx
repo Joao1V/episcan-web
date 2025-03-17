@@ -28,7 +28,7 @@ export default async function Providers({ children }: ProvidersProps) {
 
    return (
       <NextAuthProvider session={session}>
-         <ReactQueryProvider>{children}</ReactQueryProvider>
+         <ReactQueryProvider token={session?.token}>{children}</ReactQueryProvider>
          <ToastProvider />
       </NextAuthProvider>
    );

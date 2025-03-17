@@ -1,16 +1,19 @@
 'use client';
 
-import React, { ReactNode, useEffect, useState } from 'react';
-
-import { useSession } from 'next-auth/react';
+import React, { ReactNode, useState } from 'react';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 import { saveToken } from '@/libs/axios/utils/token';
 
-export default function ReactQueryProvider({ children }: { children: ReactNode }) {
-   const { data: session, status } = useSession();
+export default function ReactQueryProvider({
+   children,
+   token,
+}: {
+   children: ReactNode;
+   token: string | undefined;
+}) {
    const [queryClient] = useState(
       () =>
          new QueryClient({
@@ -21,16 +24,15 @@ export default function ReactQueryProvider({ children }: { children: ReactNode }
                   refetchOnReconnect: false,
                   retry: false,
                   staleTime: 5 * 1000,
+                  experimental_prefetchInRender: true,
+                  queryFn: () => {},
                },
             },
          }),
    );
-
-   useEffect(() => {
-      if (session && status === 'authenticated') {
-         saveToken(session.token);
-      }
-   }, [status]);
+   if (token) {
+      saveToken(token);
+   }
 
    return (
       <QueryClientProvider client={queryClient}>
