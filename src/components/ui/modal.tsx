@@ -1,4 +1,4 @@
-import React, { JSX, ReactNode } from 'react';
+import React, { JSX, ReactNode, useEffect, useState } from 'react';
 import { Modal } from 'react-bootstrap';
 
 interface ModalBuilderProps {
@@ -25,16 +25,26 @@ export const ModalBuilder: React.FC<ModalBuilderProps> = (props) => {
       bodyClassName,
       backdrop,
       footer,
+      closeButton,
    } = props;
+
+   const [_showModal, setShowModal] = useState(show);
+
+   useEffect(() => {
+      setShowModal(true);
+   }, [show]);
    return (
       <Modal
          size={size}
          show={show}
+         onExited={() => {
+            setShowModal(false);
+         }}
          onHide={() => setModal(false)}
          centered={centered}
          backdrop={backdrop}
       >
-         {title && (
+         {(title || closeButton) && (
             <Modal.Header closeButton={!backdrop}>
                {/*{!backdrop && (*/}
                {/*   <div className={'position-absolute end-0 border-0 z-index-1 '}>*/}
@@ -47,10 +57,10 @@ export const ModalBuilder: React.FC<ModalBuilderProps> = (props) => {
                {/*      ></button>*/}
                {/*   </div>*/}
                {/*)}*/}
-               <Modal.Title>{title}</Modal.Title>
+               {title && <Modal.Title>{title}</Modal.Title>}
             </Modal.Header>
          )}
-         <Modal.Body className={bodyClassName || ''}>{children}</Modal.Body>
+         {_showModal && <Modal.Body className={bodyClassName || ''}>{children}</Modal.Body>}
 
          {footer && <Modal.Footer>{footer}</Modal.Footer>}
       </Modal>
