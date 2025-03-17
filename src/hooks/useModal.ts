@@ -8,12 +8,8 @@ type Options = {
    initialShow: boolean;
 }
 
-type UseModal = {
-   isShow: boolean;
-   setModal: (show: boolean) => void;
-}
 export const useModal = (key: string, options?: Options ) => {
-   const { modal, setModal, registerModal, removeModal } = modalStore();
+   const { modal, setModal, registerModal, removeModal, modalProps } = modalStore();
 
    useEffect(() => {
       registerModal(key, (options?.initialShow || false));
@@ -24,6 +20,7 @@ export const useModal = (key: string, options?: Options ) => {
 
    return {
       isShow: modal[key] || false,
-      setModal: (show: boolean) => setModal(key, show),
+      setModal: (show: boolean, props?: any) => setModal(key, show, props),
+      modalProps: modalProps[key] || null,
    };
 };
