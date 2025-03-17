@@ -1,6 +1,7 @@
 'use client';
 
 import React, { MouseEventHandler } from 'react';
+import { createPortal } from 'react-dom';
 import { ITooltip, Tooltip } from 'react-tooltip';
 
 import { clsx } from 'clsx';
@@ -9,7 +10,12 @@ type Variants = ButtonVariants | ButtonOutlineVariants;
 
 type ButtonVariants = 'primary' | 'secondary' | 'success' | 'warning' | 'danger';
 
-type ButtonOutlineVariants = 'outline-primary' | 'outline-secondary' | 'outline-success' | 'outline-warning' | 'outline-danger';
+type ButtonOutlineVariants =
+   | 'outline-primary'
+   | 'outline-secondary'
+   | 'outline-success'
+   | 'outline-warning'
+   | 'outline-danger';
 interface ButtonProps {
    text?: string;
    className?: string;
@@ -18,7 +24,8 @@ interface ButtonProps {
    size?: 'sm' | 'lg' | 'xl';
    variant?: Variants;
    disabled?: boolean;
-   tooltip?: ITooltip;
+   tooltip?: Omit<ITooltip, 'anchorSelect'> & { anchorSelect: string }; // 🔥 Torna anchorSelect obrigatório
+
    onClick?: MouseEventHandler<Element>;
 }
 
@@ -56,16 +63,18 @@ export const Button: React.FC<ButtonProps> = (props) => {
       >
          {children || text}
 
-         {tooltip && (
-            <Tooltip
-               className={'py-1 px-2'}
-               noArrow
-               style={{ fontSize: 14, zIndex: 2 }}
-               delayShow={100}
-               offset={5}
-               {...tooltip}
-            />
-         )}
+         {tooltip &&
+            createPortal(
+               <Tooltip
+                  className="py-1 px-2"
+                  noArrow
+                  style={{ fontSize: 14, zIndex: 9999 }}
+                  delayShow={100}
+                  offset={5}
+                  {...tooltip}
+               />,
+               document.body,
+            )}
       </button>
    );
 };
