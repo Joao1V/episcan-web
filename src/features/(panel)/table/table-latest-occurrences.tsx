@@ -1,9 +1,17 @@
-import React, { useMemo } from 'react';
+'use client';
 
+import React, { useMemo }  from 'react';
+
+import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 import { KTIcon } from 'kt-icon';
 import moment from 'moment';
+import 'swiper/css';
+import 'swiper/css/pagination';
+import { Pagination } from 'swiper/modules';
+import { Swiper, SwiperSlide } from 'swiper/react';
 
 import { TableBuilder, createColumnHelper } from '@/libs/table-builder';
 import { Paginate } from '@/libs/table-builder/components/component-paginate';
@@ -21,11 +29,15 @@ type CameraVerificationResponse = {
 const columnHelper = createColumnHelper<CameraVerificationResponse>();
 
 export function TableLatestOccurrences(props: { companyIdentifier: string }) {
+   const router = useRouter();
 
-   const { data, isLoading, isFetching, filterKey } = useDashboardCameraVerificationPaginate(props.companyIdentifier, {
-      filterKey: FILTER_KEYS.LATEST_OCCURRENCES,
-      isKeepPrevious: true,
-   });
+   const { data, isLoading, isFetching, filterKey } = useDashboardCameraVerificationPaginate(
+      props.companyIdentifier,
+      {
+         filterKey: FILTER_KEYS.LATEST_OCCURRENCES,
+         // isKeepPrevious: true,
+      },
+   );
 
    const columns = useMemo(
       () => [
@@ -69,18 +81,77 @@ export function TableLatestOccurrences(props: { companyIdentifier: string }) {
 
    return (
       <div>
-         <TableBuilder
-            data={data?.data}
-            isLoading={isLoading}
-            is={{ stickyHeader: true, fetching: isFetching}}
-            columns={columns}
-            maxHeight={500}
-         />
-         <div className={'mt-5'}>
-            <Paginate data={data}
-                      filterKey={filterKey}
-            />
+         <div className="row g-5">
+            {data?.data?.map((item: any, index: number) => {
+               const images = [
+                  item.camera_verification_verification_image1,
+                  item.camera_verification_verification_image2,
+                  item.camera_verification_verification_image3,
+               ].filter(Boolean);
+
+               return (
+                  <div key={index} className="col-12 col-md-6 col-xl-4">
+                     <div className="border border-gray-500 rounded-2">
+                        <Swiper
+                           modules={[Pagination]}
+                           slidesPerView={1}
+                           grabCursor
+                           loop
+                           className={'rounded-top-2'}
+                           pagination={{ clickable: true }}
+                        >
+                           {images.map((image: any, imageIndex) => (
+                              <SwiperSlide key={imageIndex}>
+                                 <div
+                                    onDoubleClick={() => {
+                                       window.open(image, '_blank');
+                                    }}
+                                 >
+                                    <Image
+                                       src={image}
+                                       alt={''}
+                                       className={'w-100'}
+                                       width={1000}
+                                       height={400}
+                                    />
+                                 </div>
+                              </SwiperSlide>
+                           ))}
+                        </Swiper>
+
+                        <div className={'p-4'}>
+                           <h5>{item.camera_title}</h5>
+                           <p>{item.monitored_company_department_title}</p>
+                           <p className={'mb-0 text-end text-gray-700'}>
+                              {moment(item.camera_verification_verification_at).format(
+                                 'DD/MM/YYYY HH:mm:ss',
+                              )}
+                           </p>
+                        </div>
+                     </div>
+                  </div>
+               );
+            })}
+         </div>
+         <div className={'mt-4'}>
+            <Paginate data={data} filterKey={filterKey} />
          </div>
       </div>
    );
+   // return (
+   //    <div>
+   //       <TableBuilder
+   //          data={data?.data}
+   //          isLoading={isLoading}
+   //          is={{ stickyHeader: true, fetching: isFetching}}
+   //          columns={columns}
+   //          maxHeight={500}
+   //       />
+   //       <div className={'mt-5'}>
+   //          <Paginate data={data}
+   //                    filterKey={filterKey}
+   //          />
+   //       </div>
+   //    </div>
+   // );
 }
