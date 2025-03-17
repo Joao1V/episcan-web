@@ -10,8 +10,8 @@ export function useOrganization(): { [key: string]: any } {
    // const data = queryClient.getQueryData(['active-organization']);
    const { data } = useQuery({
       queryKey: [QUERY_KEYS.ACTIVE_ORGANIZATION],
+      queryFn: () => organizationList?.data?.length > 0 ? organizationList.data[0] : {},
       initialData: organizationList?.data?.length > 0 ? organizationList.data[0] : {},
-
       enabled: false,
    });
 

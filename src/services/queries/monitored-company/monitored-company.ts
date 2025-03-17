@@ -8,6 +8,7 @@ export function useMonitoredCompany() {
 
    const { data } = useQuery({
       queryKey: [QUERY_KEYS.ACTIVE_COMPANY],
+      queryFn: () => dataCache?.data?.length > 0 ? dataCache.data[0] : {},
       initialData: dataCache?.data?.length > 0 ? dataCache.data[0] : {},
       enabled: false,
    });
