@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { FormProvider, UseFormReturn, useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 
 import { yupResolver } from '@hookform/resolvers/yup';
 import { clsx } from 'clsx';
@@ -19,15 +19,18 @@ export interface FormBuilderConfig {
    fields: FormField[];
    schema?: yup.ObjectSchema<any>;
 }
-interface FormBuilderProps {
+export interface FormBuilderProps {
    config: FormBuilderConfig;
-   isLoading?: boolean;
    isResetOnSubmit?: boolean;
    isSubmitOnEnter?: boolean;
    isEnableWatcher?: boolean;
    id?: string;
    defaultValues?: Record<string, any>;
    onSubmit?: (args: Record<string, any>) => Promise<void> | void;
+   onFetchData?: {
+      fn: () => Promise<any>;
+      enabled?: boolean;
+   };
 }
 const FormBuilder: React.FC<FormBuilderProps> = (props) => {
    const {
@@ -37,12 +40,29 @@ const FormBuilder: React.FC<FormBuilderProps> = (props) => {
       isEnableWatcher,
       defaultValues,
       isResetOnSubmit = true,
-   } = props;
+   } = props ?? {};
 
    const methods = useForm({
       resolver: yupResolver(config?.schema || generateSchema(config.fields) || null),
-      defaultValues: defaultValues,
-   }) as UseFormReturn<Record<string, any>>;
+      defaultValues: async () => {
+         if (props.onFetchData) {
+            const { enabled = true, fn } = props.onFetchData;
+
+            if (!enabled) {
+               return defaultValues
+            }
+
+            const response = await fn();
+
+            return {
+               ...defaultValues,
+               ...response,
+            };
+         } else {
+            return defaultValues;
+         }
+      },
+   }) ;
 
    const {
       handleSubmit,
@@ -186,7 +206,9 @@ const FormBuilder: React.FC<FormBuilderProps> = (props) => {
                {
                   row: !config.isHorizontal,
                },
-               config.formClassName ? `${config.formClassName}` : !config.isHorizontal ? 'gy-3' : undefined,
+               config.formClassName ? `${config.formClassName}`
+               : !config.isHorizontal ? 'gy-3'
+               : undefined,
             )}
          >
             <RenderController {...config} />

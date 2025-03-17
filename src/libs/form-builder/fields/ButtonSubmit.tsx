@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
-import { CommonFieldConfig, FieldDefaultProps } from '../types/fields';
+import { CommonFieldConfig } from '../types/fields';
 
 export type SubmitConfig = Pick<CommonFieldConfig, 'col' | 'showIf'> & {
    type: 'submit';

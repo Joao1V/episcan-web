@@ -3,7 +3,7 @@
 import React, { memo } from 'react';
 import { useController } from 'react-hook-form';
 
-import { CommonFieldConfig, FieldDefaultProps } from '../types/fields';
+import { CommonFieldConfig } from '../types/fields';
 import { Masks } from '../utils/masks';
 import saveValue from '../utils/saveValue';
 

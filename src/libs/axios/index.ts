@@ -1,12 +1,14 @@
+import { redirect } from 'next/navigation';
+
 import axios from 'axios';
 
 import { API_HEADER_MAIN } from './headers';
 import { showLoadingToast, updateToast } from './toast';
-import { AdditionalConfig, Options, RequestParams } from './types';
+import { Options, RequestParams } from './types';
 import { isClient, isServer } from './utils/constants';
 import { formatValidatorErrors } from './utils/formatValidator';
 import { getToken } from './utils/token';
-import { redirect } from 'next/navigation';
+import { signOut } from 'next-auth/react';
 
 const instance = axios.create({
    baseURL: process.env.NEXT_PUBLIC_API_BASE_URL_MAIN,
@@ -14,13 +16,14 @@ const instance = axios.create({
 });
 
 // EXECUTA ANTES DO REQUEST
-instance.interceptors.request.use(async (config: AdditionalConfig) => {
-   if (config.method !== 'get' && isClient) {
+instance.interceptors.request.use(async (config) => {
+   const { userToken, isDisableToast } = config.options ?? {};
+
+   if (config.method !== 'get' && isClient && !isDisableToast) {
       showLoadingToast('Carregando...');
    }
    const token = await getToken();
-
-   config.headers['userToken'] = token || config?.userToken;
+   config.headers['userToken'] = token || userToken;
 
    return config;
 });
@@ -56,8 +59,8 @@ const request = async <T, TResponse>(configs: RequestParams<T>): Promise<TRespon
          url,
          data,
          params,
-         ...(options ? options : {}),
-      } as AdditionalConfig);
+         options: options ? options : null,
+      });
       return response.data;
    } catch (err: any) {
       if (err?.response?.data?.validator) {
@@ -65,8 +68,12 @@ const request = async <T, TResponse>(configs: RequestParams<T>): Promise<TRespon
          console.log('err.response.data.formattedErrors', err.response.data.formattedErrors);
          console.log('err?.response.data', err?.response.data);
 
-         if (err?.response.data?.message.includes('Token já desabilitado') && typeof window === 'undefined') {
-            redirect('/login')
+         if (err?.response.data?.message.includes('Token já desabilitado')) {
+            if (typeof window === 'undefined') {
+               redirect('/login');
+            } else {
+               // await signOut();
+            }
          }
       }
 

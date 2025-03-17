@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import { useController } from 'react-hook-form';
 
-import { CommonFieldConfig, FieldDefaultProps } from '../types/fields';
+import { CommonFieldConfig } from '../types/fields';
 
 type Options = {
    label: string;

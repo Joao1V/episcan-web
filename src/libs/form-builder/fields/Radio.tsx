@@ -2,6 +2,7 @@ import React, { memo, useEffect, useState } from 'react';
 import { useController } from 'react-hook-form';
 
 import { CommonFieldConfig } from '@/libs/form-builder/types/fields';
+import useFormStore from '@/libs/form-builder/store/useFormStore';
 
 type Options = {
    label: string;
@@ -25,8 +26,8 @@ const Radio: React.FC<RadioConfig> = (props) => {
    const {
       field,
       fieldState: { error },
+      formState: { isLoading},
    } = useController({ name: accessor });
-
    const handleSelectOption = (option: Options) => {
       if (type === 'checkbox' && options.length > 0) {
          if (Array.isArray(field.value)) {
@@ -48,7 +49,6 @@ const Radio: React.FC<RadioConfig> = (props) => {
    };
 
    useEffect(() => {
-      console.log(options);
       if (keys.length === 2 && options.length > 0) {
          const [label, value] = keys;
          const filteredOptions = options
@@ -64,7 +64,6 @@ const Radio: React.FC<RadioConfig> = (props) => {
             .filter((item) => !!item);
          setOptions(filteredOptions);
       } else if (options.length > 0){
-         console.log('aq?');
          setOptions(options);
       }
    }, []);

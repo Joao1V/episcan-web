@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { Controller, useFormContext, useWatch } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 
 import { clsx } from 'clsx';
 import { FormBuilderConfig } from 'form-builder';

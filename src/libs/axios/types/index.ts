@@ -1,12 +1,9 @@
-import { InternalAxiosRequestConfig, Method } from 'axios';
+import { AxiosRequestHeaders, InternalAxiosRequestConfig, Method, AxiosRequestConfig } from 'axios';
 
 export type Options = {
-   isClub?: boolean;
    isDisableToast?: boolean;
    userToken?: string;
 };
-
-export type AdditionalConfig = InternalAxiosRequestConfig & Options
 
 export type RequestParams<T> = {
    method: Method;

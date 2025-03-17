@@ -2,18 +2,15 @@
 
 import React, { CSSProperties, useEffect, useMemo, useRef } from 'react';
 
-import {
-   Column,
-   ColumnDef,
-   ColumnMeta,
-   RowData,
-   createColumnHelper,
-   flexRender,
-   getCoreRowModel,
-   useReactTable,
-} from '@tanstack/react-table';
+
+
+import { Column, ColumnDef, ColumnMeta, RowData, createColumnHelper, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import '@tanstack/react-table';
 import { clsx } from 'clsx';
+
+
+
+
 
 declare module '@tanstack/react-table' {
    interface ColumnMeta<TData extends RowData, TValue> {
@@ -37,22 +34,25 @@ interface TableBuilderProps<T extends object> {
       fetching?: boolean;
       stickyHeader?: boolean;
    };
+   columnVisibility?: Record<keyof T, boolean> | undefined;
    maxHeight?: number;
 }
 function TableBuilder<T extends object>(props: TableBuilderProps<T>) {
-   const { columns, data, isLoading, maxHeight, is } = props;
+   const { columns, data = [], isLoading, maxHeight, is, columnVisibility } = props;
    const { stickyHeader, fetching } = is || {};
 
    const tableRef = useRef<HTMLTableElement>(null);
    const tableResponsiveRef = useRef<HTMLTableElement>(null);
 
    const { getHeaderGroups, getRowModel } = useReactTable({
-      columns: columns,
-      data: data ? data : [],
+      columns,
+      data: data,
       getCoreRowModel: getCoreRowModel(),
       columnResizeMode: 'onChange',
+      state: {
+        columnVisibility: columnVisibility || {},
+      },
    });
-
 
    return (
       <>
@@ -63,7 +63,7 @@ function TableBuilder<T extends object>(props: TableBuilderProps<T>) {
             }}
             className={clsx('table-responsive', { 'table-loading': fetching })}
          >
-            {(!isLoading && fetching) && <div className="table-loading-message">Buscando...</div>}
+            {!isLoading && fetching && <div className="table-loading-message">Buscando...</div>}
 
             <table
                ref={tableRef}
@@ -110,7 +110,10 @@ function TableBuilder<T extends object>(props: TableBuilderProps<T>) {
                   <tbody>
                      {Array.from({ length: 5 }).map((_, index) => (
                         <tr className={'border-0 '} key={index}>
-                           <td colSpan={columns.length} className={clsx('py-1', {'pt-4': index === 0})}>
+                           <td
+                              colSpan={columns.length}
+                              className={clsx('py-1', { 'pt-4': index === 0 })}
+                           >
                               <div className="skeleton h-25px"></div>
                            </td>
                         </tr>

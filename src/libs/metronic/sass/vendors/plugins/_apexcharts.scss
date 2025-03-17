@@ -145,6 +145,7 @@ rect.legend-mouseover-inactive,
   text-align: left;
   justify-content: left;
   align-items: center;
+  gap: 4px;
 }
 
 .apexcharts-tooltip-series-group.apexcharts-active .apexcharts-tooltip-marker {
@@ -624,6 +625,9 @@ rect.legend-mouseover-inactive,
   font-family: var(--secondary-font-family), sans-serif !important;
 }
 
+.apexcharts-legend-series {
+  gap:4px
+}
 .apexcharts-title-text {
   font-weight: 400;
 }
@@ -675,7 +679,7 @@ rect.legend-mouseover-inactive,
   border-radius: 0.75rem !important;
   box-shadow: var(--bs-dropdown-box-shadow) !important;
   border: 0 !important;
-  background: var(--bs-dropdown-box-shadow) !important;
+  background: #fff !important;
   color: var(--bs-gray-800);
 }
 .apexcharts-xaxistooltip.apexcharts-theme-light:before {

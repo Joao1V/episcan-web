@@ -10,6 +10,7 @@ import type {
 } from 'react-hook-form';
 
 import useFormStore, { FormState, ReturnedValidate } from '@/libs/form-builder/store/useFormStore';
+import { FormBuilderProps } from 'form-builder';
 
 export type FormStructure<T extends FieldValues> = {
    data: T;
