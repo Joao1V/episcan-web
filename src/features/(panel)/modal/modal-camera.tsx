@@ -5,14 +5,21 @@ import api from 'api';
 import FormBuilder from 'form-builder';
 
 import { MODAL_PANEL_KEYS } from '@/features/(panel)/modal/modalKeys';
-import { useModal } from '@/hooks';
+import { useGetData, useModal } from '@/hooks';
+import { useCameraPaginate } from '@/services/queries/cameras';
 import { useDepartmentList } from '@/services/queries/departament';
 import { useEpiPaginate } from '@/services/queries/epi';
 import { useMonitoredCompany } from '@/services/queries/monitored-company';
-import { useCameraPaginate } from '@/services/queries/cameras';
 
-export function ModalAddCamera() {
-   const { setModal, isShow } = useModal(MODAL_PANEL_KEYS.ADD_CAMERA);
+export function ModalCamera() {
+   const { setModal, isShow, modalProps } = useModal(MODAL_PANEL_KEYS.ADD_CAMERA);
+   const {
+      monitored_company_department_identifier,
+      camera_identifier,
+      title,
+      url,
+      verification_minute,
+   } = modalProps ?? {};
 
    const { data: episData } = useEpiPaginate();
    const { data: companyData } = useMonitoredCompany();
@@ -21,22 +28,49 @@ export function ModalAddCamera() {
 
    const onSubmit = async (args: any) => {
       try {
-         console.log(args);
-         const response = await api.post('/restrict/camera', args);
+         if (camera_identifier) {
+            await api.put(`/restrict/camera/${camera_identifier}`, args);
+            // await refetchCameraIdentifier();
+            setModal(false);
+         } else {
+            await api.post('/restrict/camera', args);
+         }
          await refetch();
-         console.log(response);
       } catch (error) {
          throw error;
       }
    };
 
+   const { promise } = useGetData({
+      queryKey: ['camera', camera_identifier],
+      url: `/restrict/camera/${camera_identifier}`,
+      enabled: !!camera_identifier,
+      onSuccess: (response) => response.object,
+   });
+
    return (
-      <ModalBuilder title={'Adicionar câmera'} size={'lg'} show={isShow} setModal={setModal}>
+      <ModalBuilder title={(camera_identifier ?  'Editar' : 'Adicionar ') + ' câmera'} size={'lg'} show={isShow} setModal={setModal}>
          <FormBuilder
             onSubmit={onSubmit}
+            onFetchData={{
+               fn: async () => {
+                  const response = await promise;
+                  const { epi_items } = response ?? {};
+
+                  return {
+                     epi_list:
+                        epi_items ? epi_items.map((i: Record<string, any>) => i.identifier) : null,
+                  };
+               },
+               enabled: !!camera_identifier,
+            }}
             defaultValues={{
                monitored_company_identifier: companyData?.identifier,
                active: true,
+               title,
+               url,
+               verification_minute,
+               monitored_company_department_identifier,
             }}
             config={{
                col: 'col-12',
@@ -56,7 +90,7 @@ export function ModalAddCamera() {
                      accessor: 'monitored_company_department_identifier',
                      label: 'Setor responsável',
                      options: departments,
-                     keys: ['full_path', 'identifier']
+                     keys: ['full_path', 'identifier'],
                   },
                   {
                      type: 'number',
@@ -78,7 +112,7 @@ export function ModalAddCamera() {
                   },
                   {
                      type: 'submit',
-                     text: 'Adicionar',
+                     text: camera_identifier ? 'Editar' : 'Adicionar',
                   },
                ],
             }}

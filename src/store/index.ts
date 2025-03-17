@@ -1,2 +1,1 @@
 export { modalStore } from './modalStore';
-

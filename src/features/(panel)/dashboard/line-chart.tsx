@@ -13,13 +13,14 @@ interface StateChart {
 }
 export function LineChart(props: any) {
    const { data } = props;
-   const [state, setState] = useState<StateChart>({
-      series: [
-         {
-            name: 'Total',
-            data: data.map((item: { [key: string]: number }) => item.total),
-         },
-      ],
+
+   const [state] = useState<StateChart>({
+      series: Object.keys(data.series)
+         .sort()
+         .map((key) => ({
+            name: key,
+            data: data.series[key],
+         })),
       options: {
          chart: {
             type: 'area',
@@ -41,9 +42,7 @@ export function LineChart(props: any) {
             title: {
                text: 'Data',
             },
-            categories: data.map((item: { [key: string]: string }) =>
-               moment(item.date).format('DD-MM-YYYY'),
-            ),
+            categories: data.dates.map((date: []) => moment(date).format('DD-MM')),
          },
          yaxis: {
             title: {
@@ -52,8 +51,8 @@ export function LineChart(props: any) {
          },
          tooltip: {
             x: {
-               show: true
-            }
+               show: true,
+            },
          },
       },
    });
