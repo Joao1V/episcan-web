@@ -20,7 +20,7 @@ export const fieldsFormAddress = {
 interface FormAddressProps {
    onSubmit?: (data: any) => void;
    nameFields?: Partial<typeof fieldsFormAddress>;
-   defaultValue?: Partial<typeof fieldsFormAddress>;
+   defaultValue?: Partial<Record<keyof typeof fieldsFormAddress, string | null | number>>;
    hideSubmitButton?: boolean;
    id?: string;
    ref?: React.ForwardedRef<any>;
@@ -70,14 +70,16 @@ const FormAddress = (props: FormAddressProps) => {
       <FormBuilder
          id={idForm}
          onSubmit={props.onSubmit}
-         defaultValues={{
-            address_street: 'PORTO FELIZ ',
-            address_district: 'VILA SÃO JORGE DA LAGOA',
-            city: 'CAMPO GRANDE',
-            state: 'MS',
-            address_cep: '79095020',
-            address_city_id: 1506,
-            address_number: '123',
+         defaultValues={
+          props?.defaultValue &&
+         {
+            [fieldNames.street_name]: props.defaultValue?.street_name,
+            [fieldNames.district]: props.defaultValue?.district,
+            [fieldNames.city]: props.defaultValue?.city,
+            [fieldNames.state]: props.defaultValue?.state,
+            [fieldNames.cep]: props.defaultValue?.cep,
+            [fieldNames.city_id]: props.defaultValue?.city_id,
+            [fieldNames.street_number]: props.defaultValue?.street_number,
          }}
          config={{
             fields: [
@@ -91,6 +93,7 @@ const FormAddress = (props: FormAddressProps) => {
                         await checkCEP(value);
                      }
                   },
+                  placeholder: 'Digite o CEP',
                   format: '##.###-###',
                   rule: yup
                      .string()
@@ -105,6 +108,7 @@ const FormAddress = (props: FormAddressProps) => {
                   accessor: fieldNames.street_name,
                   col: 'col-12 col-md-8',
                   label: 'Rua',
+                  placeholder: 'Rua',
                   rule: yup.string().required('Rua é obrigatória'),
                   loading: {
                      isFetching,
@@ -115,6 +119,7 @@ const FormAddress = (props: FormAddressProps) => {
                   accessor: fieldNames.street_number,
                   col: 'col-12 col-md-4 ',
                   label: 'Número',
+                  placeholder: 'Número',
                   rule: yup.string().required('Rua é obrigatória'),
                   disabled: isFetching,
                },
@@ -122,6 +127,7 @@ const FormAddress = (props: FormAddressProps) => {
                   type: 'text',
                   accessor: fieldNames.district,
                   label: 'Bairro',
+                  placeholder: 'Bairro',
                   rule: yup.string().required('Bairro é obrigatório'),
                   loading: {
                      isFetching,
@@ -131,6 +137,7 @@ const FormAddress = (props: FormAddressProps) => {
                   type: 'text',
                   accessor: fieldNames.city,
                   label: 'Cidade',
+                  placeholder: 'Cidade',
                   col: 'col-12 col-md-6',
                   rule: yup.string().required('Bairro é obrigatório'),
                   loading: {
@@ -142,6 +149,7 @@ const FormAddress = (props: FormAddressProps) => {
                   accessor: fieldNames.state,
                   col: 'col-12 col-md-6',
                   label: 'Estado',
+                  placeholder: 'Estado',
                   rule: yup.string().required('Bairro é obrigatório'),
                   loading: {
                      isFetching,
@@ -152,6 +160,7 @@ const FormAddress = (props: FormAddressProps) => {
                   type: 'text',
                   accessor: 'address_complement',
                   label: 'Complemento',
+                  placeholder: 'Complemento',
                   disabled: isFetching,
                },
             ],
