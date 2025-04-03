@@ -1,11 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import ReactApexChart from 'react-apexcharts';
 
 import { ApexOptions } from 'apexcharts';
 import 'libs/metronic/sass/vendors/plugins/_apexcharts.scss';
 import moment from 'moment';
+import dynamic from 'next/dynamic';
+const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 interface StateChart {
    series: ApexOptions['series'];

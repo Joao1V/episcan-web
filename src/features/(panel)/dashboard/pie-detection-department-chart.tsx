@@ -1,8 +1,12 @@
-// Importações necessárias
-import React from 'react';
-import ReactApexChart from 'react-apexcharts';
+'use client';
 
-import { ApexOptions } from 'apexcharts';
+import React from 'react';
+
+import dynamic from 'next/dynamic';
+
+import type { ApexOptions } from 'apexcharts';
+
+const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 interface StateChart {
    series: ApexOptions['series'];
@@ -61,4 +65,4 @@ const PieDetectionDepartmentChart = (props: any) => {
    );
 };
 
-export default PieDetectionDepartmentChart;
+export { PieDetectionDepartmentChart };
