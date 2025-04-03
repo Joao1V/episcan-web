@@ -1,4 +1,5 @@
 'use client';
+
 import FormCreateOrganization from '@/features/(panel)/forms/form-create-organization';
 
 export default function Page() {

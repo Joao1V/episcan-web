@@ -1,15 +1,15 @@
-import { FormCreateMonitoredCompany } from '@/features/(panel)/forms/form-create-monitored-company';
+import { FormMonitoredCompany } from '@/features/(panel)/forms/form-monitored-company';
 
 export default function Page() {
    return (
-      <div className={'card'}>
+      <div className={'card mt-5'}>
          <div className={'card-header'}>
             <div className="card-title">
                <h3>Criar Empresa</h3>
             </div>
          </div>
          <div className={'card-body'}>
-            <FormCreateMonitoredCompany />
+            <FormMonitoredCompany mode={'create'}/>
          </div>
       </div>
    );

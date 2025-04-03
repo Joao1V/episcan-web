@@ -1,20 +1,19 @@
 'use client';
 
 import { CardVerificationStats } from '@/features/(panel)/dashboard/card-verification-stats';
-import { LineChart } from '@/features/(panel)/dashboard/line-chart';
-import PieDetectionDepartmentChart from '@/features/(panel)/dashboard/pie-detection-department-chart';
-import {
-   useDashboardSummary,
-} from '@/services/queries/dashboard';
+import { useDashboardSummary } from '@/services/queries/dashboard';
 import { useMonitoredCompany } from '@/services/queries/monitored-company';
+import { PieDetectionDepartmentChart } from '@/features/(panel)/dashboard/pie-detection-department-chart';
+import { LineChart } from '@/features/(panel)/dashboard/line-chart';
 
 export default function Page() {
    const { data: monitoredCompany } = useMonitoredCompany();
 
-   const { data: summary, isLoading } = useDashboardSummary(monitoredCompany?.identifier);
+   const { data: summary, isLoading, isError } = useDashboardSummary(monitoredCompany?.identifier);
 
    if (isLoading && !summary) return <>Loading</>;
 
+   if (isError) return <>Error</>;
    return (
       <div>
          <div className="mb-5">
@@ -69,12 +68,10 @@ export default function Page() {
                </div>
                <div className={'card-body'}>
                   <div className={'mb-5'}>
-                     {typeof window !== 'undefined' && (
                         <LineChart data={summary.line_chart_department_detections_in_period} />
-                     )}
                   </div>
 
-                  <PieDetectionDepartmentChart data={summary?.detection_count_by_department} />
+                     <PieDetectionDepartmentChart data={summary?.detection_count_by_department} />
                </div>
             </div>
          </div>

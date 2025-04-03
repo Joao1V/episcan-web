@@ -25,14 +25,14 @@ export default function LoginPage() {
          redirect: false,
       });
       if (response) {
-         console.log(response);
          const { error, ok } = response;
          if (!ok) {
             console.log(error);
             toast.error(error, { hideProgressBar: false, position: 'bottom-right' });
             return;
          }
-         router.replace('/painel/dashboard');
+
+         router.replace('/painel');
       }
    }
 
@@ -79,7 +79,7 @@ export default function LoginPage() {
 
                   <div className="d-flex flex-stack flex-wrap gap-3 fs-base fw-semibold mb-8">
                      <div />
-                     <Link href="#">Esquece a senha?</Link>
+                     <Link href="#">Esqueceu a senha?</Link>
                   </div>
 
                   <div className="d-grid mb-10" onClick={() => onValidateForm()}>

@@ -37,7 +37,7 @@ export default function Page() {
          });
 
          if (responseLogin?.ok) {
-            router.replace('/painel/dashboard');
+            router.replace('/painel');
          }
       } catch (e) {
          console.log('cai no catch?', e);

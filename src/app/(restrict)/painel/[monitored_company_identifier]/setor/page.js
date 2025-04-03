@@ -1,11 +1,8 @@
 'use client';
 
-import Link from 'next/link';
-
 import { Button } from '@components/ui';
 import { KTIcon } from 'kt-icon';
 
-import { FormAddNewSector } from '@/features/(panel)/forms/form-add-new-sector';
 import { ModalAddNewSector } from '@/features/(panel)/modal/modal-add-new-sector';
 import { MODAL_PANEL_KEYS } from '@/features/(panel)/modal/modalKeys';
 import { useModal } from '@/hooks';
