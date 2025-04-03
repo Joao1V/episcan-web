@@ -25,7 +25,9 @@ type TypesMenu = 'header' | 'company-profile';
 
 type Options = {
    type: TypesMenu[];
-   params?: Record<string, any>;
+   params?: Record<string, any> & {
+      monitored_company_identifier: string;
+   };
 };
 
 type ReturnMenu = {
@@ -38,7 +40,7 @@ export function useMenu(options: Options): ReturnMenu {
 
    const menu = useMemo(() => {
       const baseMenu: Menu = {
-         basePath: '/painel',
+         basePath: `/painel/${params?.monitored_company_identifier}`,
          routes: [
             {
                name: 'Dashboard',
@@ -88,7 +90,7 @@ export function useMenu(options: Options): ReturnMenu {
             {
                name: 'Funcionários',
                breadcrumb: 'Funcionários',
-               href: `/funcionarios/${params?.organizationIdentifier}`,
+               href: '/funcionarios',
                title: 'Gerenciar funcionários',
                description: null,
                active: false,
