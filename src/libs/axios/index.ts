@@ -51,7 +51,7 @@ instance.interceptors.response.use(
    },
 );
 
-const request = async <T, TResponse>(configs: RequestParams<T>): Promise<TResponse | any> => {
+const request = async <TResponse, T>(configs: RequestParams<T>): Promise<TResponse | any> => {
    const { method, url, params, data, options = null } = configs;
    try {
       const response = await instance.request({
@@ -82,20 +82,20 @@ const request = async <T, TResponse>(configs: RequestParams<T>): Promise<TRespon
       });
    }
 };
-const get = async <TResponse>(url: string, params?: any, options?: Options): Promise<TResponse> => {
-   return request({ method: 'GET', url, params, options });
+const get = async <TResponse = any, TParams extends Record<string, any> | null = any>(url: string, params?: TParams, options?: Options): Promise<TResponse> => {
+   return request<TResponse, TParams>({ method: 'GET', url, params, options });
 };
 
-const post = async <T, TResponse>(url: string, data: T, options?: Options): Promise<TResponse> => {
-   return request({ method: 'POST', url, data, options });
+const post = async <TResponse = any, TData extends Record<string, any> = any>(url: string, data: TData, options?: Options): Promise<TResponse> => {
+   return request<TResponse, TData>({ method: 'POST', url, data, options });
 };
 
-const put = async <T, TResponse>(url: string, data: T, options?: Options): Promise<TResponse> => {
-   return request({ method: 'PUT', url, data, options });
+const put = async <TResponse, TData extends Record<string, any>>(url: string, data: TData, options?: Options): Promise<TResponse> => {
+   return request<TResponse, TData>({ method: 'PUT', url, data, options });
 };
 
-const del = async <T, TResponse>(url: string, data: T, options?: Options): Promise<TResponse> => {
-   return request({ method: 'DELETE', url, data, options });
+const del = async <TResponse, TData>(url: string, data: TData, options?: Options): Promise<TResponse> => {
+   return request<TResponse, TData>({ method: 'DELETE', url, data, options });
 };
 
 const api = { get, post, put, delete: del };

@@ -43,7 +43,7 @@ const PhoneInput = (props: PhoneInputConfig) => {
          id={field.name || 'phone_numbers'}
          type="tel"
          maxLength={15}
-         placeholder="Digite seu telefone"
+         placeholder={props.placeholder || 'Digite seu telefone'}
       />
    );
 };

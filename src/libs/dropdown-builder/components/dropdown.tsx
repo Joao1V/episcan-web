@@ -5,6 +5,7 @@ import { Dropdown as ReactDropdown } from 'react-bootstrap';
 
 import { CustomItem, CustomMenu, CustomToggle } from './index';
 import { ItemProps, MenuProps, MyDropdownProps, ToggleProps } from '@/libs/dropdown-builder/@types';
+import { createPortal } from 'react-dom';
 
 interface DropdownContext {
    trigger?: string;
@@ -72,7 +73,7 @@ const Menu = (props: MenuProps) => {
    const { children } = props;
    const context = _useDropdown();
 
-   return <ReactDropdown.Menu as={CustomMenu} context={context}>{children}</ReactDropdown.Menu>;
+   if (typeof window !== 'undefined') return createPortal(<ReactDropdown.Menu as={CustomMenu} context={context}>{children}</ReactDropdown.Menu>, document.body);
 };
 
 const Item = (props: ItemProps) => {

@@ -26,7 +26,7 @@ export type MaskedInputConfig = CommonFieldConfig & {
 } & (CpfCnpjConfig | NumberFormatConfig);
 
 const MaskedInput: React.FC<MaskedInputConfig> = (props) => {
-   const { placeholder, accessor, format, onChange, type } = props;
+   const { placeholder, accessor, format, onChange, type, disabled } = props;
    let loading: Loading | undefined;
 
    if (type === 'number-format') {
@@ -47,7 +47,7 @@ const MaskedInput: React.FC<MaskedInputConfig> = (props) => {
             getInputRef={field.ref}
             id={field.name}
             onValueChange={(e, sourceInfo) => {
-               if (sourceInfo.event) {
+               if (sourceInfo.event && !disabled) {
                   field.onChange(e.value);
                   if (onChange) {
                      onChange(e);
@@ -57,7 +57,7 @@ const MaskedInput: React.FC<MaskedInputConfig> = (props) => {
             className={`form-control ${error ? 'is-invalid' : ''}`}
             placeholder={placeholder || ''}
             format={format}
-            disabled={loading?.isFetching || false}
+            disabled={loading?.isFetching || disabled || false}
          />
          {loading?.isFetching && loading?.type === 'spinner' && <Spinner />}
       </div>

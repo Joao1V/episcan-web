@@ -5,7 +5,7 @@ import { useController } from 'react-hook-form';
 
 import { Autocomplete, LoadScriptNext } from '@react-google-maps/api';
 
-import { CommonFieldConfig, FieldDefaultProps } from './../types/fields';
+import { CommonFieldConfig } from './../types/fields';
 
 export type GoogleAutocompleteConfig = CommonFieldConfig & {
    type: 'google-autocomplete';
@@ -17,8 +17,8 @@ export type GoogleAutocompleteConfig = CommonFieldConfig & {
    showIcon?: boolean;
    defaultValue?: string;
 };
-const GoogleAutocomplete = (props: FieldDefaultProps<'google-autocomplete'>) => {
-   const { showIcon = true, accessor, defaultValue, onSelect } = props.config;
+const GoogleAutocomplete = (props: GoogleAutocompleteConfig) => {
+   const { showIcon = true, accessor, defaultValue, onSelect } = props;
 
    const [autocomplete, setAutocomplete] = useState<google.maps.places.Autocomplete | null>(null);
    const [libraries] = useState<'places'[]>(['places']);

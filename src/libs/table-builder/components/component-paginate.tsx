@@ -2,12 +2,12 @@
 
 import React, { useEffect, useState } from 'react';
 import ReactPaginate from 'react-paginate';
-import Select from 'react-select';
+// import Select from 'react-select';
 
 import dynamic from 'next/dynamic';
 import { usePaginate, PaginationDefault } from '@/hooks';
 
-// const Select = dynamic(() => import('react-select'), { ssr: false });
+const Select = dynamic(() => import('react-select'), { ssr: false });
 
 interface DataPaginateResponse {
    current_page: number;
@@ -82,7 +82,7 @@ export const Paginate = (props: PaginateProps) => {
                      menuPlacement={'auto'}
                      className={'react-select-styled react-select-sm'}
                      classNamePrefix="react-select"
-                     onChange={(e) => handleChange('limit', e ? e.value : 1)}
+                     onChange={(e: any) => handleChange('limit', e ? e.value : 1)}
                   />
                </div>
             :  <div></div>}

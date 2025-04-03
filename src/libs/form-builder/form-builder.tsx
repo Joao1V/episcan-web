@@ -9,7 +9,7 @@ import * as yup from 'yup';
 
 import RenderController from './components/RenderController';
 import useFormStore from './store/useFormStore';
-import { FormField } from './types/fields';
+import { CommonFieldConfig, FormField } from './types/fields';
 import { generateSchema } from './utils/helpers';
 
 export interface FormBuilderConfig {
@@ -19,7 +19,8 @@ export interface FormBuilderConfig {
    fields: FormField[];
    schema?: yup.ObjectSchema<any>;
 }
-export interface FormBuilderProps {
+
+type FormBuilderProps<T extends object> = {
    config: FormBuilderConfig;
    isResetOnSubmit?: boolean;
    isSubmitOnEnter?: boolean;
@@ -28,11 +29,11 @@ export interface FormBuilderProps {
    defaultValues?: Record<string, any>;
    onSubmit?: (args: Record<string, any>) => Promise<void> | void;
    onFetchData?: {
-      fn: () => Promise<any>;
+      fn: (() => Promise<any>) | (() => any);
       enabled?: boolean;
    };
 }
-const FormBuilder: React.FC<FormBuilderProps> = (props) => {
+const FormBuilder = <T extends object> (props: FormBuilderProps<T>) => {
    const {
       config,
       id,
@@ -44,7 +45,7 @@ const FormBuilder: React.FC<FormBuilderProps> = (props) => {
 
    const methods = useForm({
       resolver: yupResolver(config?.schema || generateSchema(config.fields) || null),
-      defaultValues: async () => {
+      defaultValues: props.onFetchData ? async () => {
          if (props.onFetchData) {
             const { enabled = true, fn } = props.onFetchData;
 
@@ -61,7 +62,7 @@ const FormBuilder: React.FC<FormBuilderProps> = (props) => {
          } else {
             return defaultValues;
          }
-      },
+      } : defaultValues,
    }) ;
 
    const {
@@ -79,7 +80,6 @@ const FormBuilder: React.FC<FormBuilderProps> = (props) => {
 
    const showErrors = React.useCallback((e: any) => {
       if (e?.cause?.formattedErrors) {
-         console.log(e?.cause);
          Object.entries(e.cause.formattedErrors as Record<string, string>).forEach(
             ([key, value]) => {
                setError(key, { type: 'custom', message: value });

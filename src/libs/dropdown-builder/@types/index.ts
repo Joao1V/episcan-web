@@ -18,7 +18,7 @@ export interface ToggleProps {
 }
 
 export interface MenuProps {
-   children: React.ReactNode;
+   children: any ;
 }
 
 export interface ItemProps {

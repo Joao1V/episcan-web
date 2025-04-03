@@ -80,6 +80,7 @@ const Radio: React.FC<RadioConfig> = (props) => {
                      type="checkbox"
                      ref={field.ref}
                      name={field.name}
+                     disabled={isLoading}
                      onChange={() => {
                         handleSelectOption(item);
                      }}
@@ -100,6 +101,7 @@ const Radio: React.FC<RadioConfig> = (props) => {
             <input
                className="form-check-input"
                type="checkbox"
+               disabled={isLoading}
                {...field}
                id={`checkbox_${accessor}`}
             />
@@ -121,7 +123,7 @@ const Radio: React.FC<RadioConfig> = (props) => {
                      <label
                         className={`btn btn-outline btn-outline-dashed btn-sm btn-active-light-primary w-100 ${
                            isActive ? 'active' : ''
-                        } ${error ? 'border-danger ' : ''}`}
+                        } ${error ? 'border-danger ' : ''} ${isLoading ? 'disabled' : ''}`}
                      >
                         <input
                            type={type}
@@ -133,6 +135,7 @@ const Radio: React.FC<RadioConfig> = (props) => {
                            onClick={() => {
                               handleSelectOption(option);
                            }}
+                           disabled={isLoading}
                            checked={isActive}
                         />
                         <span className="fs-6">{option.label}</span>

@@ -22,6 +22,7 @@ export type CommonFieldConfig = {
    label: string | ReactNode;
    placeholder?: string;
    rule?: yup.StringSchema;
+   required?: boolean;
    col?: string;
    isHorizontal?: boolean;
    helperInput?: string;
@@ -43,7 +44,3 @@ export type FormField =
    | RadioConfig
    | CheckboxConfig
    | TextareaConfig;
-
-export type FieldDefaultProps<T extends FormField['type']> = {
-   config: Extract<FormField, { type: T }>;
-};

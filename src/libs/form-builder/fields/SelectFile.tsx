@@ -4,7 +4,7 @@ import { useController } from 'react-hook-form';
 
 import Link from 'next/link';
 
-import { CommonFieldConfig, FieldDefaultProps } from '../types/fields';
+import { CommonFieldConfig } from '../types/fields';
 import saveValue from '../utils/saveValue';
 
 type AcceptFiles = 'pdf' | 'image' | 'video';
@@ -33,7 +33,7 @@ export type SelectFileConfig = Omit<CommonFieldConfig, 'label' | 'placeholder'> 
    accept?: AcceptFiles[];
 };
 
-const SelectFile = (props: FieldDefaultProps<'select-file'>) => {
+const SelectFile = (props: SelectFileConfig) => {
    const {
       onChange,
       isMultiple = false,
@@ -42,8 +42,8 @@ const SelectFile = (props: FieldDefaultProps<'select-file'>) => {
       disableRemoveFiles,
       accept = ['image'],
       text,
-      accessor,
-   } = props.config;
+      accessor
+   } = props;
 
    const {
       field,
