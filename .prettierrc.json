@@ -3,15 +3,19 @@
     "@trivago/prettier-plugin-sort-imports"
   ],
   "importOrder": [
-    "^react",
-    "next",
-    "<THIRD_PARTY_MODULES>",
-    "^@/lib/(.*)$",
-    "^@/components/(.*)$",
-    "^@/assets/(.*)$",
-    "^@/app/(.*)$",
-    "^./(.*)$"
-  ],
+      "^react",
+      "next",
+      "<THIRD_PARTY_MODULES>",
+      "^@/components/(.*)$",
+      "^@/assets/(.*)$",
+      "^@/app/(.*)$",
+      "^@/features/(.*)$",
+      "^@/services/(.*)$",
+      "^@/libs/(.*)$",
+      "^./(.*)$",
+      "^[^\\u0000-\\u007F]",
+      "^type"
+   ],
   "importOrderSeparation": true,
   "importOrderSortSpecifiers": true,
   "bracketSpacing": true,
