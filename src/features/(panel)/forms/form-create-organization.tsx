@@ -1,5 +1,7 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
+
 import FormAddress from '@components/FormAddress';
 import { useMutation } from '@tanstack/react-query';
 import api from 'api';
@@ -8,16 +10,16 @@ import * as yup from 'yup';
 
 export default function FormCreateOrganization() {
    const form = useFormBuilder(['address', 'data_company']);
-
+   const router = useRouter();
    const onSubmit = async () => {
       try {
          const { isValidForm, payload } = await form.validateForms();
          if (isValidForm) {
-            const response = await api.post('/restrict/organization', payload);
-            console.log(response);
+            await api.post('/restrict/organization', payload);
+            router.replace('/painel/criar/empresa');
          }
-      } catch (e: any) {
-         form.validator(e);
+      } catch (error: any) {
+         form.validator(error);
       }
    };
 
@@ -28,15 +30,9 @@ export default function FormCreateOrganization() {
    return (
       <>
          <div>
-            <h4>Dados da organização</h4>
             <FormBuilder
                id={'data_company'}
                defaultValues={{
-                  name: 'empresa',
-                  juridical_fancy_name: 'razao social',
-                  cpfcnpj: '29299292929292',
-                  contact_mail: 'e@e.com',
-                  contact_mobile_phone: '67999999999',
                   person_type: 'JURIDICA',
                   active: true,
                }}
@@ -46,7 +42,7 @@ export default function FormCreateOrganization() {
                         type: 'text',
                         accessor: 'name',
                         label: 'Nome da Empresa',
-                        rule: yup.string().required('Rua é obrigatória'),
+                        rule: yup.string().required('Nome é obrigatória'),
                      },
                      {
                         type: 'text',
@@ -68,6 +64,7 @@ export default function FormCreateOrganization() {
                         type: 'phone-input',
                         accessor: 'contact_mobile_phone',
                         label: 'Contato da Empresa',
+                        placeholder: 'Contato da Empresa',
                      },
                   ],
                }}
