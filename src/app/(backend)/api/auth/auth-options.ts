@@ -31,13 +31,19 @@ const authOptions: NextAuthOptions = {
          if (trigger === 'update') {
             token.user = session;
             token.token = session.token;
+            token.expires = session.expires;
          }
 
          return token;
       },
       async session({ session, token }) {
-         session.user = token.user;
+         if (token.user) {
+            session.user = token.user;
+         }
          session.token = session.user.access.token;
+         session.exp = token.exp;
+         session.iat = token.iat;
+
          return session;
       },
    },
@@ -56,7 +62,7 @@ const authOptions: NextAuthOptions = {
                   `/access/${process.env.NEXT_PUBLIC_COMPANY_IDENTIFIER}/auth`,
                   { login, password },
                );
-               const me: any = await api.get('/me', null, { userToken: user.userToken });
+               const me = await api.get('/me', {}, { userToken: user.userToken });
 
                if (me.object) {
                   return {
