@@ -1,12 +1,15 @@
 'use client';
 
-import React, { ReactNode, useState, useEffect } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
+
+import { useSession } from 'next-auth/react';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 import { saveToken } from '@/libs/axios/utils/token';
-import { useSession } from 'next-auth/react';
+import { removeAllCookies } from '@/libs/helpers/functions';
+import { COOKIES_KEYS } from '@/services/queries/queryKeys';
 
 export default function ReactQueryProvider({
    children,
@@ -39,6 +42,9 @@ export default function ReactQueryProvider({
    useEffect(() => {
       if (session && status === 'authenticated') {
          saveToken(session.token);
+      }
+      if (status === 'unauthenticated') {
+         removeAllCookies(COOKIES_KEYS);
       }
    }, [status]);
 
