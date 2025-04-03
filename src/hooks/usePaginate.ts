@@ -16,13 +16,13 @@ interface UsePaginateOptions<TFilters> {
 
 interface UsePaginateReturn<TFilters> {
    paginate: PaginationParams<TFilters>;
-   updateFilterValue: (label: keyof TFilters | string, value: any) => void;
-   updateFilters: (newFilters: TFilters) => void;
+   updateFilterValue: (label: keyof TFilters, value: any) => void;
+   updateFilters: (newFilters: Partial<PaginationParams<TFilters>>) => void;
 }
 
 function usePaginate<TFilters extends object>(
    filterKey: string,
-   options?: UsePaginateOptions<TFilters>,
+   options?: UsePaginateOptions<PaginationParams<TFilters>>,
 ): UsePaginateReturn<TFilters> {
    const { initialFilters: initialData } = options || {};
 
@@ -34,14 +34,17 @@ function usePaginate<TFilters extends object>(
       initialData,
    });
 
-   const updateFilterValue = (label: keyof TFilters | string, value: any) => {
+    const updateFilterValue = <K extends keyof TFilters>(
+      label: K,
+      value: TFilters[K],
+   ) => {
       queryClient.setQueryData(queryKey, (oldData: PaginationParams<TFilters>) => ({
          ...oldData,
          [label]: value,
       }));
    };
 
-   const updateFilters = (newFilters: TFilters) => {
+   const updateFilters = (newFilters: Partial<PaginationParams<TFilters>>) => {
       queryClient.setQueryData(queryKey, (oldData: any) => {
          return {
             ...oldData,
