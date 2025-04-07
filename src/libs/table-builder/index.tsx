@@ -4,7 +4,17 @@ import React, { CSSProperties, useEffect, useMemo, useRef } from 'react';
 
 
 
-import { Column, ColumnDef, ColumnMeta, RowData, createColumnHelper, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
+import {
+   Column,
+   ColumnDef,
+   ColumnMeta,
+   RowData,
+   createColumnHelper,
+   flexRender,
+   getCoreRowModel,
+   useReactTable,
+   VisibilityState
+} from '@tanstack/react-table';
 import '@tanstack/react-table';
 import { clsx } from 'clsx';
 
@@ -25,7 +35,7 @@ interface MetaProperties {
    style?: React.CSSProperties;
 }
 
-interface TableBuilderProps<T extends object> {
+interface TableBuilderProps<T extends Record<string, any>> {
    columns: ColumnDef<T, any>[]; // Estrutura das colunas
    data: T[]; // Dados da tabela
    isLoading?: boolean;
@@ -34,7 +44,7 @@ interface TableBuilderProps<T extends object> {
       fetching?: boolean;
       stickyHeader?: boolean;
    };
-   columnVisibility?: Record<keyof T, boolean> | undefined;
+   columnVisibility?: T extends any[] ? never : Partial<Record<keyof T, boolean>>;
    maxHeight?: number;
 }
 function TableBuilder<T extends object>(props: TableBuilderProps<T>) {
@@ -50,7 +60,7 @@ function TableBuilder<T extends object>(props: TableBuilderProps<T>) {
       getCoreRowModel: getCoreRowModel(),
       columnResizeMode: 'onChange',
       state: {
-        columnVisibility: columnVisibility || {},
+        columnVisibility: columnVisibility ,
       },
    });
 

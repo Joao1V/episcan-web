@@ -8,7 +8,6 @@ import { Options, RequestParams } from './types';
 import { isClient, isServer } from './utils/constants';
 import { formatValidatorErrors } from './utils/formatValidator';
 import { getToken } from './utils/token';
-import { signOut } from 'next-auth/react';
 
 const instance = axios.create({
    baseURL: process.env.NEXT_PUBLIC_API_BASE_URL_MAIN,

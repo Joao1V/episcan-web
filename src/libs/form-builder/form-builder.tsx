@@ -20,7 +20,7 @@ export interface FormBuilderConfig {
    schema?: yup.ObjectSchema<any>;
 }
 
-type FormBuilderProps<T extends object> = {
+export type FormBuilderProps<T extends object> = {
    config: FormBuilderConfig;
    isResetOnSubmit?: boolean;
    isSubmitOnEnter?: boolean;

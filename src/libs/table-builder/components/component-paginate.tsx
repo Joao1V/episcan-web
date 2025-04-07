@@ -6,31 +6,17 @@ import ReactPaginate from 'react-paginate';
 
 import dynamic from 'next/dynamic';
 import { usePaginate, PaginationDefault } from '@/hooks';
+import { ResponsePaginate } from '@/libs/axios/types';
 
 const Select = dynamic(() => import('react-select'), { ssr: false });
 
-interface DataPaginateResponse {
-   current_page: number;
-   data: [any];
-   first_page_url: string;
-   from: number;
-   last_page: number;
-   last_page_url: string;
-   next_page_url: string | null;
-   path: string;
-   per_page: number;
-   prev_page_url: string | null;
-   to: number;
-   total: number;
-}
-interface PaginateProps {
-   data: DataPaginateResponse;
+type PaginateProps<T> = {
+   data: ResponsePaginate<T>;
    filterKey: string;
-   paginate?: any;
    hiddenPerPage?: boolean;
 }
 
-export const Paginate = (props: PaginateProps) => {
+export const Paginate = <T,>(props: PaginateProps<T>) => {
    const { data, filterKey, hiddenPerPage = false } = props;
    const { current_page, last_page, total, per_page } = data ?? {};
    const {paginate, updateFilterValue} = usePaginate<PaginationDefault>(filterKey)
@@ -60,7 +46,6 @@ export const Paginate = (props: PaginateProps) => {
    const handleChange = (label: keyof PaginationDefault, value: number) => {
       console.log(label, value);
       console.log(paginate, filterKey);
-      paginate.search_global
       updateFilterValue(label, value);
    };
 
