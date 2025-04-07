@@ -8,7 +8,7 @@ type Options = {
 export function useOrganizationInvitePaginate(options?: Options) {
 
    return useGetData({
-      queryKey: [QUERY_KEYS.ORGANIZATION_INVITE_USERS_PAGINATE],
+      queryKey: [QUERY_KEYS.ORGANIZATION.INVITE_USERS_PAGINATE],
       url: '/restrict/organization-invite/paginate',
       onSuccess: (response) => {
          return response.object;

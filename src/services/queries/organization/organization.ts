@@ -1,19 +1,39 @@
 'use client';
 
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+
+import type { ResponsePaginate } from '@/libs/axios/types';
+import { Organization } from '@/services/queries/organization/types';
 import { QUERY_KEYS } from '@/services/queries/queryKeys';
 
-export function useOrganization(): { [key: string]: any } {
+type OrganizationReturn = {
+   data: Organization | null;
+   refreshData: () => Promise<void>;
+};
+export function useOrganization(): OrganizationReturn {
    const queryClient = useQueryClient();
-   const organizationList: any = queryClient.getQueryData([QUERY_KEYS.ORGANIZATION_PAGINATE]) || {};
-   // queryClient.setQueryData(['active-organization'], () => organizationList?.data?.length > 0 ? organizationList.data[0] : {});
-   // const data = queryClient.getQueryData(['active-organization']);
-   const { data } = useQuery({
-      queryKey: [QUERY_KEYS.ACTIVE_ORGANIZATION],
-      queryFn: () => organizationList?.data?.length > 0 ? organizationList.data[0] : {},
-      initialData: organizationList?.data?.length > 0 ? organizationList.data[0] : {},
+
+   const organizationPaginate =
+      queryClient.getQueryData<ResponsePaginate<Organization[]>>([
+         QUERY_KEYS.ORGANIZATION.PAGINATE,
+      ]) || null;
+
+   const organizationActive =
+      organizationPaginate?.data && organizationPaginate.data.length > 0 ?
+         organizationPaginate.data[0]
+      :  null;
+
+   const { data, refetch } = useQuery({
+      queryKey: [QUERY_KEYS.ORGANIZATION.ACTIVE],
+      queryFn: () => organizationActive,
+      initialData: organizationActive,
       enabled: false,
    });
 
-   return { data };
+   const refreshData = async () => {
+      await queryClient.refetchQueries({ queryKey: [QUERY_KEYS.ORGANIZATION.PAGINATE] });
+      await refetch();
+   };
+
+   return { data, refreshData };
 }

@@ -1,0 +1,1 @@
+export { usePermissions } from '@/services/queries/permissions/permissions';

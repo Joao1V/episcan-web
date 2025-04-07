@@ -10,10 +10,15 @@ export const QUERY_KEYS = {
       DEPARTMENTS: 'monitored_company_departments_tree',
       ACTIVE: 'monitored_company_active',
    },
-   CAMERAS_PAGINATE: 'paginate_camera',
+   CAMERAS: {
+      PAGINATE: 'camera_paginate'
+   },
    EPIS_PAGINATE: 'paginate_epi_item',
 
    CAMERA_VERIFICATION_PAGINATE: (identifier: string) => `latest_occurrences_${identifier}`,
+   CAMERA_VERIFICATION: {
+      PAGINATE: '',
+   },
    DASHBOARD_SUMMARY: 'dashboard_summary',
 
    PERMISSIONS: 'permissions'
