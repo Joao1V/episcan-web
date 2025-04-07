@@ -15,15 +15,15 @@ export function ModalCamera() {
    const { setModal, isShow, modalProps } = useModal(MODAL_PANEL_KEYS.ADD_CAMERA);
    const {
       monitored_company_department_identifier,
-      camera_identifier,
+      camera_identifier = '',
       title,
       url,
       verification_minute,
    } = modalProps ?? {};
 
    const { data: episData } = useEpiPaginate();
-   const { data: companyData } = useMonitoredCompany();
-   const { data: departments } = useDepartmentList(companyData?.identifier);
+   const { data: monitoredCompany } = useMonitoredCompany();
+   const { data: departments } = useDepartmentList(monitoredCompany?.identifier);
    const { refetch } = useCameraPaginate();
 
    const onSubmit = async (args: any) => {
@@ -42,14 +42,14 @@ export function ModalCamera() {
    };
 
    const { promise } = useGetData({
-      queryKey: ['camera', camera_identifier],
+      queryKey: ['camera_details', camera_identifier],
       url: `/restrict/camera/${camera_identifier}`,
       enabled: !!camera_identifier,
       onSuccess: (response) => response.object,
    });
 
    return (
-      <ModalBuilder title={(camera_identifier ?  'Editar' : 'Adicionar ') + ' câmera'} size={'lg'} show={isShow} setModal={setModal}>
+      <ModalBuilder title={`${camera_identifier ?  'Editar' : 'Adicionar '  } câmera`} size={'lg'} show={isShow} setModal={setModal}>
          <FormBuilder
             onSubmit={onSubmit}
             onFetchData={{
@@ -65,7 +65,7 @@ export function ModalCamera() {
                enabled: !!camera_identifier,
             }}
             defaultValues={{
-               monitored_company_identifier: companyData?.identifier,
+               monitored_company_identifier: monitoredCompany?.identifier,
                active: true,
                title,
                url,

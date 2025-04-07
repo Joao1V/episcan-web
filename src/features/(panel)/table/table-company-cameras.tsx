@@ -1,22 +1,24 @@
 'use client';
 
+import { Button } from '@components/ui';
 import { useMutation } from '@tanstack/react-query';
 import api from 'api';
 import { KTIcon } from 'kt-icon';
 import moment from 'moment-timezone';
 
 import { MODAL_PANEL_KEYS } from '@/features/(panel)/modal/modalKeys';
-import { useModal } from '@/hooks';
-import { TableBuilder } from '@/libs/table-builder';
+
 import { useCameraPaginate } from '@/services/queries/cameras';
 import { useMonitoredCompany } from '@/services/queries/monitored-company';
-import { Button } from '@components/ui';
+
+import { TableBuilder } from '@/libs/table-builder';
+
+import { useModal } from '@/hooks';
 
 export function TableCompanyCameras() {
-
    const { setModal } = useModal(MODAL_PANEL_KEYS.ADD_CAMERA);
 
-   const { data, isLoading, setData } = useCameraPaginate();
+   const { data: companyPaginate, isLoading, setData } = useCameraPaginate();
    const { data: monitoredCompany } = useMonitoredCompany();
 
    const { mutate: onEdit, isPending } = useMutation({
@@ -28,7 +30,7 @@ export function TableCompanyCameras() {
       }) => {
          const { identifier, active, original } = variables;
          const payload = {
-            monitored_company_identifier: monitoredCompany.identifier,
+            monitored_company_identifier: monitoredCompany?.identifier,
             monitored_company_department_identifier:
                original.monitored_company_department_identifier,
             title: original.title,
@@ -37,17 +39,15 @@ export function TableCompanyCameras() {
             active,
          };
 
-         const aux = data?.data;
+         const aux = companyPaginate?.data;
          aux[variables.index].active = active;
-         setData(aux, true);
+
          await api.put(`/restrict/camera/${identifier}`, payload, { isDisableToast: true });
       },
    });
 
    const { mutate: onRemove, isPending: isPendingRemove } = useMutation({
-      mutationFn: async (variables: {
-         identifier: string;
-      }) => {
+      mutationFn: async (variables: { identifier: string }) => {
          const { identifier } = variables;
 
          await api.delete(`/restrict/camera/${identifier}`, null);
@@ -55,13 +55,14 @@ export function TableCompanyCameras() {
    });
 
    if (isLoading) return <div className={'text-center'}>Carregando...</div>;
-   if (data?.data?.length === 0) {
+
+   if (companyPaginate?.data?.length === 0) {
       return <div className={'text-center'}>Nenhuma camera cadastrada</div>;
    }
 
    return (
       <TableBuilder
-         data={data ? [...data?.data] : []}
+         data={companyPaginate ? [...companyPaginate?.data] : []}
          columnVisibility={{
             identifier: false,
          }}
@@ -162,12 +163,12 @@ export function TableCompanyCameras() {
                            place: 'bottom',
                         }}
                      >
-                        <KTIcon name={'pencil'} type={'solid'}/>
+                        <KTIcon name={'pencil'} type={'solid'} />
                      </Button>
 
                      <Button
                         className={'btn btn-reset p-0'}
-                        onClick={() => onRemove({identifier: row.original.identifier})}
+                        onClick={() => onRemove({ identifier: row.original.identifier })}
                         disabled={isPendingRemove}
                         tooltip={{
                            content: 'Remover',
@@ -175,7 +176,7 @@ export function TableCompanyCameras() {
                            place: 'bottom',
                         }}
                      >
-                        <KTIcon name={'abstract-11'} type={'solid'}/>
+                        <KTIcon name={'abstract-11'} type={'solid'} />
                      </Button>
                   </div>
                ),

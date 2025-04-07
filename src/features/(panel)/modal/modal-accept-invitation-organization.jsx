@@ -18,6 +18,7 @@ export function ModalAcceptInvitationOrganization() {
    const {isShow, setModal} = useModal(MODAL_PANEL_KEYS.INVITATION_ORGANIZATION, {
       initialShow: true,
    });
+   console.log(session.user);
    const organizationPaginate= useOrganizationPaginate();
    const monitoredCompany = useMonitoredCompanyPaginate();
    const router = useRouter();

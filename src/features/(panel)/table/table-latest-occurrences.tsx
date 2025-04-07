@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo }  from 'react';
+import React, { useMemo } from 'react';
 
 import Image from 'next/image';
 import Link from 'next/link';
@@ -13,31 +13,27 @@ import 'swiper/css/pagination';
 import { Pagination } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
-import { TableBuilder, createColumnHelper } from '@/libs/table-builder';
-import { Paginate } from '@/libs/table-builder/components/component-paginate';
-import { useDashboardCameraVerificationPaginate } from '@/services/queries/dashboard';
+import { useCameraVerificationPaginate } from '@/services/queries/cameras';
+import type { CameraVerification } from '@/services/queries/cameras';
 import { FILTER_KEYS } from '@/services/queries/queryKeys';
 
-type CameraVerificationResponse = {
-   camera_title: string;
-   camera_verification_verification_at: string;
-   camera_verification_verification_image1: string | null;
-   camera_verification_verification_image2: string | null;
-   camera_verification_verification_image3: string | null;
-   monitored_company_department_title: string;
-};
-const columnHelper = createColumnHelper<CameraVerificationResponse>();
+import { TableBuilder, createColumnHelper } from '@/libs/table-builder';
+import { Paginate } from '@/libs/table-builder/components/component-paginate';
+
+const columnHelper = createColumnHelper<CameraVerification>();
 
 export function TableLatestOccurrences(props: { companyIdentifier: string }) {
    const router = useRouter();
 
-   const { data, isLoading, isFetching, filterKey } = useDashboardCameraVerificationPaginate(
-      props.companyIdentifier,
-      {
-         filterKey: FILTER_KEYS.LATEST_OCCURRENCES,
-         // isKeepPrevious: true,
-      },
-   );
+   const {
+      data: cameraVerification,
+      isLoading,
+      isFetching,
+      filterKey,
+   } = useCameraVerificationPaginate(props.companyIdentifier, {
+      filterKey: FILTER_KEYS.LATEST_OCCURRENCES,
+      // isKeepPrevious: true,
+   });
 
    const columns = useMemo(
       () => [
@@ -82,7 +78,7 @@ export function TableLatestOccurrences(props: { companyIdentifier: string }) {
    return (
       <div>
          <div className="row g-5">
-            {data?.data?.map((item: any, index: number) => {
+            {cameraVerification?.data?.map((item, index) => {
                const images = [
                   item.camera_verification_verification_image1,
                   item.camera_verification_verification_image2,
@@ -134,7 +130,7 @@ export function TableLatestOccurrences(props: { companyIdentifier: string }) {
             })}
          </div>
          <div className={'mt-4'}>
-            <Paginate data={data} filterKey={filterKey} />
+            <Paginate data={cameraVerification} filterKey={filterKey} />
          </div>
       </div>
    );
