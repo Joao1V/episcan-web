@@ -1,9 +1,15 @@
+import type { Metadata } from 'next';
+
 import api from 'api';
 import ServerHydration from 'server-hydration';
 
-import { Cookies } from '@/libs/helpers/server-functions';
 import { COOKIES_KEYS, QUERY_KEYS } from '@/services/queries/queryKeys';
 
+import { Cookies } from '@/libs/helpers/server-functions';
+
+export const metadata: Metadata = {
+   title: 'Funcionários',
+};
 export default async function Layout(props: any) {
    const { children } = props;
 

@@ -1,10 +1,17 @@
 'use client';
 
 import { CardVerificationStats } from '@/features/(panel)/dashboard/card-verification-stats';
+import { LineChart } from '@/features/(panel)/dashboard/line-chart';
+import { PieDetectionDepartmentChart } from '@/features/(panel)/dashboard/pie-detection-department-chart';
+
+
+
 import { useDashboardSummary } from '@/services/queries/dashboard';
 import { useMonitoredCompany } from '@/services/queries/monitored-company';
-import { PieDetectionDepartmentChart } from '@/features/(panel)/dashboard/pie-detection-department-chart';
-import { LineChart } from '@/features/(panel)/dashboard/line-chart';
+
+
+
+
 
 export default function Page() {
    const { data: monitoredCompany } = useMonitoredCompany();
