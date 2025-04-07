@@ -1,18 +1,16 @@
 'use client';
 
-import { useMemo } from 'react';
-
-import { usePathname, useRouter } from 'next/navigation';
-
 import { keepPreviousData, useQuery, useQueryClient } from '@tanstack/react-query';
-import index from 'libs/axios';
+import api from 'api';
 
-interface OptionsProps {
+import { ResponsePaginate } from '@/libs/axios/types';
+
+interface OptionsProps<TResponse> {
    url: string;
    queryKey?: Array<any>;
    filterKey?: string;
-   onSuccess?: (response: any) => any | void;
-   initialFn?: (serverData: any) => any | void; //A FUNCAO VAI RODAR APENAS UMA VEZ NA PRIMEIRA MONTAGEM DO COMPONENTE, O OBJETIVO PRINCIPAL É PARA FILTRAR OS DADOS QUE VIER DO SERVERDATA
+   onSuccess?: (response: TResponse) => Partial<TResponse> | void | object; // Espera um retorno do tipo T
+   initialFn?: (serverData: any) => TResponse | void; // Filtra os dados e retorna T
    enabled?: boolean | null;
    params?: object | any;
    serverData?: any;
@@ -21,30 +19,27 @@ interface OptionsProps {
    staleTime?: number | undefined;
 }
 
-interface MyQueryOptionsProps {
-   queryKey: Array<any>;
-   queryFn: () => Promise<any>;
-   placeholderData?: any;
-   enabled?: boolean;
-   initialData?: any;
-   staleTime?: number | undefined;
-}
+type ExtractData<T> = T extends { current_page: number; data: any } ? T['data'] : T;
 
-export type GetDataResponse = {
-   data: any;
+export type GetDataReturn<T> = {
+   data: T;
    filterKey: string;
    error: unknown | null;
    isEmptyData: boolean;
    isError: boolean;
    isFetching: boolean;
    isLoading: boolean;
-   refetch: () => void;
-   setData: (newData: any, isPaginate?: boolean) => void;
+   refetch: () => Promise<any>;
+   setData: (newData: ExtractData<T>) => void;
    setDataUnique: (label: string, value: any) => void;
-   promise: Promise<any>
+   promise: Promise<any>;
 };
-
-export const useGetData = (options: OptionsProps): GetDataResponse => {
+const isPaginated = <T>(data: unknown): data is ResponsePaginate<T> => {
+   return typeof data === 'object' && data !== null && 'current_page' in data;
+};
+export const useGetData = <TData = any, TResponse = any>(
+   options: OptionsProps<TResponse>,
+): GetDataReturn<TData> => {
    let {
       url,
       queryKey,
@@ -59,11 +54,8 @@ export const useGetData = (options: OptionsProps): GetDataResponse => {
       staleTime,
    } = options;
 
-   const isServer = typeof window === 'undefined';
-
-   const router = useRouter();
-   const pathname = usePathname();
    const queryClient = useQueryClient();
+
    const getDataFn = async () => {
       try {
          if (isQueryString) {
@@ -71,10 +63,10 @@ export const useGetData = (options: OptionsProps): GetDataResponse => {
             // router.push(`${pathname}${searchParams}`);
          }
 
-         let response = await index.get(url, params);
+         let response = await api.get<TResponse>(url, params);
 
          if (onSuccess) {
-            let aux: any = await onSuccess(response || null);
+            let aux = await onSuccess(response);
             if (aux) {
                return aux;
             }
@@ -95,13 +87,13 @@ export const useGetData = (options: OptionsProps): GetDataResponse => {
       });
    };
 
-   const setData = async (newData: any, isPaginate?: boolean) => {
+   const setData = async <K extends ExtractData<TData>>(newData: K) => {
       queryClient.setQueryData(queryKey || [url], (oldData: any) => {
-         if (isPaginate) {
-
+         console.log(isPaginated(oldData));
+         if (isPaginated(oldData)) {
             return {
                ...oldData,
-              data: newData
+               data: newData,
             };
          }
          return {
@@ -111,33 +103,25 @@ export const useGetData = (options: OptionsProps): GetDataResponse => {
       });
    };
 
-   const queryOptions: MyQueryOptionsProps = useMemo(
-      () => ({
-         queryKey: queryKey || [url],
-         queryFn: getDataFn,
-         placeholderData: isKeepPrevious ? keepPreviousData : undefined,
-         enabled: enabled === null ? true : enabled,
-         staleTime: staleTime,
-         ...(serverData ?
-            {
-               initialData:
-                  initialFn ?
-                     () => {
-                        let aux = initialFn(serverData);
-                        if (aux) {
-                           return aux;
-                        } else {
-                           return serverData;
-                        }
-                     }
-                  :  serverData,
-            }
-         :  {}),
-      }),
-      [options],
-   );
-
-   const { data, isLoading, refetch, isFetching, isError, error, promise } = useQuery(queryOptions);
+   const { data, isLoading, refetch, isFetching, isError, error, promise } = useQuery({
+      queryKey: queryKey || [url],
+      queryFn: getDataFn,
+      placeholderData: isKeepPrevious ? keepPreviousData : undefined,
+      enabled: enabled === null ? true : enabled,
+      staleTime: staleTime,
+      initialData:
+         serverData ?
+            initialFn &&
+            (() => {
+               let aux = initialFn(serverData);
+               if (aux) {
+                  return aux;
+               } else {
+                  return serverData;
+               }
+            })
+         :  undefined,
+   });
 
    const isEmptyData = data?.data?.length === 0;
 

@@ -8,28 +8,28 @@ interface PaginationDefault {
    search_global?: string;
    order_type?: 'ASC' | 'DESC';
 }
-type PaginationParams<TFilters> = PaginationDefault & TFilters;
+type Paginate<TFilters> = PaginationDefault & TFilters;
 
 interface UsePaginateOptions<TFilters> {
-   initialFilters: PaginationParams<TFilters>;
+   initialFilters: Paginate<TFilters>;
 }
 
 interface UsePaginateReturn<TFilters> {
-   paginate: PaginationParams<TFilters>;
+   paginate: Paginate<TFilters>;
    updateFilterValue: (label: keyof TFilters, value: any) => void;
-   updateFilters: (newFilters: Partial<PaginationParams<TFilters>>) => void;
+   updateFilters: (newFilters: Partial<Paginate<TFilters>>) => void;
 }
 
 function usePaginate<TFilters extends object>(
    filterKey: string,
-   options?: UsePaginateOptions<PaginationParams<TFilters>>,
+   options?: UsePaginateOptions<Paginate<TFilters>>,
 ): UsePaginateReturn<TFilters> {
    const { initialFilters: initialData } = options || {};
 
    const queryClient = useQueryClient();
    const queryKey = ['filters_paginates', filterKey];
 
-   const { data: storedData } = useSuspenseQuery<PaginationParams<TFilters>>({
+   const { data: storedData } = useSuspenseQuery<Paginate<TFilters>>({
       queryKey,
       initialData,
    });
@@ -38,13 +38,13 @@ function usePaginate<TFilters extends object>(
       label: K,
       value: TFilters[K],
    ) => {
-      queryClient.setQueryData(queryKey, (oldData: PaginationParams<TFilters>) => ({
+      queryClient.setQueryData(queryKey, (oldData: Paginate<TFilters>) => ({
          ...oldData,
          [label]: value,
       }));
    };
 
-   const updateFilters = (newFilters: Partial<PaginationParams<TFilters>>) => {
+   const updateFilters = (newFilters: Partial<Paginate<TFilters>>) => {
       queryClient.setQueryData(queryKey, (oldData: any) => {
          return {
             ...oldData,
@@ -57,4 +57,4 @@ function usePaginate<TFilters extends object>(
 }
 
 export { usePaginate };
-export type { PaginationParams, PaginationDefault };
+export type { Paginate, PaginationDefault };
