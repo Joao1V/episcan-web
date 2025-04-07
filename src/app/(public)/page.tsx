@@ -9,7 +9,7 @@ export default function Page() {
          <h3 className={'ff-secondary'}>
              Home page
          </h3>
-         <Link href={'/painel'}>Ir para painel</Link>
+         <Link href={'/login'}>Ir para painel</Link>
       </>
    );
 }
