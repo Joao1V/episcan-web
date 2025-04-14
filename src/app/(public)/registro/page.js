@@ -12,8 +12,25 @@ import api from 'api';
 import FormBuilder from 'form-builder';
 import md5 from 'md5';
 import moment from 'moment-timezone';
+import * as yup from 'yup';
 
-import { registerSchema } from '@/app/(public)/registro/page.schema';
+const registerSchema = yup.object().shape({
+   name: yup.string().required('O nome é obrigatório'),
+   contact_mail: yup.string().email('Insira um e-mail válido').required('O email é obrigatório'),
+   cpf: yup.string().required('É necessário informar seu CPF').min(11, 'Insira um CPF válido'),
+   contact_mobile_phone: yup
+      .string()
+      .required('Informe seu número de telefone')
+      .min(10, 'Insira um número válido'),
+   password: yup
+      .string()
+      .required('Informe uma senha')
+      .min(8, 'A senha deve conter no mínimo 8 caracteres'),
+   confirm_password: yup
+      .string()
+      .oneOf([yup.ref('password'), null], 'As senhas não coincidem')
+      .required('Campo obrigatório'),
+});
 
 export default function Page() {
    const router = useRouter();
@@ -29,7 +46,6 @@ export default function Page() {
             payloadRegister,
          );
 
-
          const responseLogin = await signIn('credentials', {
             login: args.contact_mail,
             password: payloadRegister.password,
@@ -40,7 +56,6 @@ export default function Page() {
             router.replace('/painel');
          }
       } catch (e) {
-         console.log('cai no catch?', e);
          throw new Error(e.message, { cause: e.cause });
       }
    }
@@ -59,15 +74,6 @@ export default function Page() {
 
                   <FormBuilder
                      isResetOnSubmit={true}
-                     defaultValues={{
-                        name: 'Primeira conta',
-                        contact_mail: 'epis@teste.com',
-                        cpf: '06391312125',
-                        contact_mobile_phone: '21400289771',
-                        password: '1q2w3e4r',
-                        confirm_password: '1q2w3e4r',
-                        terms: true,
-                     }}
                      config={{
                         col: 'col-12',
                         formClassName: 'gy-5 mb-3',
