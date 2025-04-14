@@ -38,7 +38,7 @@ export function PanelLayout({ children }: { children: ReactNode }) {
    useEffect(() => {
       setCookie(COOKIES_KEYS.ORGANIZATION.ACTIVE, {
          organization: {
-            identifier: organizationPaginate.data[0].identifier,
+            identifier: organizationPaginate?.data[0]?.identifier,
             monitored_company: monitoredCompanyPaginate.data.map((i) => ({
                identifier: i.identifier,
             })),
@@ -47,7 +47,7 @@ export function PanelLayout({ children }: { children: ReactNode }) {
 
       if (!permissions.rules.hasOrganization) {
          router.replace('/painel/criar/organizacao');
-      } else if (!permissions.rules.hasOrganization) {
+      } else if (!permissions.rules.hasMonitoredCompany) {
          router.replace('/painel/criar/empresa');
       } else if (permissions.rules.hasMonitoredCompany) {
          let companyIdentifier =
