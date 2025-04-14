@@ -24,7 +24,15 @@ export function FormMonitoredCompany(props: FormProps) {
    const router = useRouter();
    const { data: organization } = useOrganization();
    const { data: monitoredCompany } = useMonitoredCompany();
-   const { refetch: refetchMonitoredCompanyPaginate, data } = useMonitoredCompanyPaginate({ enabled: false });
+   const { refetch: refetchMonitoredCompanyPaginate } = useMonitoredCompanyPaginate({
+      enabled: false,
+      onSuccess: (response) => {
+         if (mode === 'create' && response.data.length > 0) {
+            const identifier = response.data[0].identifier;
+            router.replace(`/painel/${identifier}/dashboard`);
+         }
+      },
+   });
 
    const onSubmit = async () => {
       try {
@@ -32,7 +40,6 @@ export function FormMonitoredCompany(props: FormProps) {
          if (isValidForm) {
             if (mode === 'create') {
                await api.post('/restrict/monitored-company', payload);
-               router.replace('/painel/setor');
             } else {
                const response = await api.put(
                   `/restrict/monitored-company/${payload.identifier}`,
@@ -40,7 +47,6 @@ export function FormMonitoredCompany(props: FormProps) {
                );
             }
             await refetchMonitoredCompanyPaginate();
-
          }
       } catch (e: any) {
          form.validator(e);
@@ -82,7 +88,7 @@ export function FormMonitoredCompany(props: FormProps) {
                defaultValues={
                   mode === 'create' ?
                      {
-                        organization_identifier: organization.identifier,
+                        organization_identifier: organization?.identifier,
                         person_type: 'JURIDICA',
                      }
                   :  {
@@ -154,7 +160,7 @@ export function FormMonitoredCompany(props: FormProps) {
                   complement: 'address_complement',
                }}
                defaultValue={
-                  (mode === 'edit' && monitoredCompany) ?
+                  mode === 'edit' && monitoredCompany ?
                      {
                         cep: monitoredCompany.address_cep,
                         street_name: monitoredCompany.address_street,
