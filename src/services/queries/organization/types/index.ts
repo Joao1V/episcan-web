@@ -22,4 +22,15 @@ type Organization = {
    created_at: string;
 };
 
-export type { Organization };
+type PermissionRole = 'OWNER' | 'ADMIN' | 'USER';
+
+type OrganizationUsers = {
+   identifier: string;
+   name: string;
+   contact_mail: string;
+   contact_mobile_phone: string;
+   contact_business_phone: string | null;
+   permission_role: PermissionRole;
+};
+
+export type { Organization, OrganizationUsers };
