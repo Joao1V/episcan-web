@@ -7,15 +7,18 @@ import { useMutation } from '@tanstack/react-query';
 import api from 'api';
 import FormBuilder, { useFormBuilder } from 'form-builder';
 import * as yup from 'yup';
+import { useOrganizationPaginate } from '@/services/queries/organization';
 
 export default function FormCreateOrganization() {
    const form = useFormBuilder(['address', 'data_company']);
    const router = useRouter();
+   const { refetch } = useOrganizationPaginate({enabled: false});
    const onSubmit = async () => {
       try {
          const { isValidForm, payload } = await form.validateForms();
          if (isValidForm) {
             await api.post('/restrict/organization', payload);
+            await refetch();
             router.replace('/painel/criar/empresa');
          }
       } catch (error: any) {
@@ -41,30 +44,34 @@ export default function FormCreateOrganization() {
                      {
                         type: 'text',
                         accessor: 'name',
-                        label: 'Nome da Empresa',
+                        label: 'Nome da organização',
+                        placeholder: 'Digite o nome da organização',
                         rule: yup.string().required('Nome é obrigatória'),
                      },
                      {
                         type: 'text',
                         accessor: 'juridical_fancy_name',
+                        placeholder: 'Digite a razão social',
                         label: 'Razão Social',
                      },
                      {
                         type: 'cnpj',
                         accessor: 'cpfcnpj',
                         label: 'CNPJ',
+                        placeholder: 'Digite o CNPJ',
                      },
                      {
                         type: 'email',
                         accessor: 'contact_mail',
+                        placeholder: 'Digite o e-mail',
                         label: 'Email',
                         rule: yup.string().email().required('Rua é obrigatória'),
                      },
                      {
                         type: 'phone-input',
                         accessor: 'contact_mobile_phone',
-                        label: 'Contato da Empresa',
-                        placeholder: 'Contato da Empresa',
+                        label: 'Contato da organização',
+                        placeholder: 'Contato da organização',
                      },
                   ],
                }}
