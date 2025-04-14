@@ -19,6 +19,7 @@ import { FILTER_KEYS } from '@/services/queries/queryKeys';
 
 import { TableBuilder, createColumnHelper } from '@/libs/table-builder';
 import { Paginate } from '@/libs/table-builder/components/component-paginate';
+import { ComponentsEmpty } from '@components/components-empty';
 
 const columnHelper = createColumnHelper<CameraVerification>();
 
@@ -77,6 +78,9 @@ export function TableLatestOccurrences(props: { companyIdentifier: string }) {
 
    return (
       <div>
+         {cameraVerification?.data.length === 0 && (
+            <ComponentsEmpty title={'Nenhuma ocorrência registrada'}/>
+         )}
          <div className="row g-5">
             {cameraVerification?.data?.map((item, index) => {
                const images = [

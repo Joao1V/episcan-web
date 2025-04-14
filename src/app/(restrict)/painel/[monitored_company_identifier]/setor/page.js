@@ -1,14 +1,17 @@
 'use client';
 
+import { ComponentsEmpty } from '@components/components-empty';
 import { Button } from '@components/ui';
 import { KTIcon } from 'kt-icon';
 
 import { ModalAddNewSector } from '@/features/(panel)/modal/modal-add-new-sector';
 import { MODAL_PANEL_KEYS } from '@/features/(panel)/modal/modalKeys';
-import { useModal } from '@/hooks';
+
 import { useDepartmentList } from '@/services/queries/departament';
 import { useMonitoredCompany } from '@/services/queries/monitored-company';
 import { useOrganization, useOrganizationUsersPaginate } from '@/services/queries/organization';
+
+import { useModal } from '@/hooks';
 
 export default function Page() {
    const { data: monitoredCompany } = useMonitoredCompany();
@@ -21,21 +24,35 @@ export default function Page() {
       <>
          <ModalAddNewSector />
          <div>
-            <div className="d-flex flex-wrap flex-stack mb-6">
-               <h3 className="fw-bold my-2 fs-5">
-                  Setores
-                  <span className="fs-7 text-gray-500 fw-semibold ms-1">
-                     ({department?.length})
-                  </span>
-               </h3>
+            {department?.length > 0 && (
+               <div className="d-flex flex-wrap flex-stack mb-6">
+                  <h3 className="fw-bold my-2 fs-5">
+                     Setores
+                     <span className="fs-7 text-gray-500 fw-semibold ms-1">
+                        ({department?.length})
+                     </span>
+                  </h3>
 
-               <div className="d-flex flex-wrap my-2">
-                  <Button onClick={() => setModal(true)} variant={'primary'}>
-                     <KTIcon name={'plus'} className={'fs-6'} />
-                     Novo setor
-                  </Button>
+                  <div className="d-flex flex-wrap my-2">
+                     <Button onClick={() => setModal(true)} variant={'primary'}>
+                        <KTIcon name={'plus'} className={'fs-6'} />
+                        Novo setor
+                     </Button>
+                  </div>
                </div>
-            </div>
+            )}
+
+            {department?.length === 0 && (
+               <div className="d-flex flex-center mt-20">
+                  <ComponentsEmpty
+                     title={'Adicione um novo setor para empresa'}
+                     button={{
+                        text: 'Cadastrar setor',
+                        onClick: () => setModal(true),
+                     }}
+                  />
+               </div>
+            )}
             <div className={'row row-cols-auto'}>
                {!isLoading &&
                   department &&
