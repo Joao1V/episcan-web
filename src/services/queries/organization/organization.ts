@@ -2,13 +2,14 @@
 
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
-import type { ResponsePaginate } from '@/libs/axios/types';
-import { Organization } from '@/services/queries/organization/types';
+import type { Organization } from '@/services/queries/organization/types';
 import { QUERY_KEYS } from '@/services/queries/queryKeys';
 
+import type { ResponsePaginate } from '@/libs/axios/types';
+
 type OrganizationReturn = {
-   data: Organization | null;
-   refreshData: () => Promise<void>;
+   data: Organization | undefined;
+   refetch: () => Promise<void>;
 };
 export function useOrganization(): OrganizationReturn {
    const queryClient = useQueryClient();
@@ -16,24 +17,24 @@ export function useOrganization(): OrganizationReturn {
    const organizationPaginate =
       queryClient.getQueryData<ResponsePaginate<Organization[]>>([
          QUERY_KEYS.ORGANIZATION.PAGINATE,
-      ]) || null;
+      ]) || undefined;
 
    const organizationActive =
       organizationPaginate?.data && organizationPaginate.data.length > 0 ?
          organizationPaginate.data[0]
-      :  null;
+      :  undefined;
 
-   const { data, refetch } = useQuery({
+   const { data, refetch: _refetch } = useQuery({
       queryKey: [QUERY_KEYS.ORGANIZATION.ACTIVE],
       queryFn: () => organizationActive,
       initialData: organizationActive,
       enabled: false,
    });
 
-   const refreshData = async () => {
+   const refetch = async () => {
       await queryClient.refetchQueries({ queryKey: [QUERY_KEYS.ORGANIZATION.PAGINATE] });
-      await refetch();
+      await _refetch();
    };
 
-   return { data, refreshData };
+   return { data, refetch };
 }
