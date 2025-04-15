@@ -4,12 +4,12 @@ import { ReactNode, useEffect } from 'react';
 
 import { setCookie } from 'cookies-next';
 import { useSession } from 'next-auth/react';
-import { notFound, useParams, usePathname, useRouter } from 'next/navigation';
+import { notFound, useParams, usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import { Footer } from '@/features/(panel)/_layout/footer';
 import { Toolbar } from '@/features/(panel)/_layout/toolbar';
 import { MenuOptions } from '@/features/(panel)/menu/menu-options';
-import { ModalAcceptInvitationOrganization } from '@/features/(panel)/modal/modal-accept-invitation-organization';
+
 import { useMonitoredCompanyPaginate } from '@/services/queries/monitored-company';
 import { useOrganizationPaginate } from '@/services/queries/organization';
 import { usePermissions } from '@/services/queries/permissions';
@@ -20,9 +20,9 @@ export function PanelLayout({ children }: { children: ReactNode }) {
    const pathname = usePathname();
    const router = useRouter();
 
-   const params = useParams<{monitored_company_identifier: string}>();
-   const { data: organizationPaginate } = useOrganizationPaginate();
-   const { data: monitoredCompanyPaginate } = useMonitoredCompanyPaginate();
+   const params = useParams<{ monitored_company_identifier: string }>();
+   const { data: organizationPaginate, isFetching: organizationFetching  } = useOrganizationPaginate();
+   const { data: monitoredCompanyPaginate, isFetching: monitoredFetching } = useMonitoredCompanyPaginate();
    const permissions = usePermissions({
       initialValue: {
          hasOrganization: organizationPaginate.data.length > 0,
@@ -30,12 +30,15 @@ export function PanelLayout({ children }: { children: ReactNode }) {
          hasInvite: !!session?.user?.organization_invites?.some(({ used_at }) => used_at === null),
       },
    });
+   const searchParams = useSearchParams();
+
+   const invitationAccepted = searchParams.get('invitation_accepted');
 
    const isValidIdentifier = monitoredCompanyPaginate.data.some(
       (i) => i.identifier === params.monitored_company_identifier,
    );
 
-   useEffect(() => {
+   const validatingRoute = () => {
       setCookie(COOKIES_KEYS.ORGANIZATION.ACTIVE, {
          organization: {
             identifier: organizationPaginate?.data[0]?.identifier,
@@ -45,7 +48,13 @@ export function PanelLayout({ children }: { children: ReactNode }) {
          },
       });
 
-      if (!permissions.rules.hasOrganization) {
+      if (
+         permissions.rules.hasInvite &&
+         !permissions.rules.hasOrganization &&
+         !permissions.rules.hasMonitoredCompany
+      ) {
+         router.replace('/painel/convite');
+      } else if (!permissions.rules.hasOrganization) {
          router.replace('/painel/criar/organizacao');
       } else if (!permissions.rules.hasMonitoredCompany) {
          router.replace('/painel/criar/empresa');
@@ -58,15 +67,26 @@ export function PanelLayout({ children }: { children: ReactNode }) {
             router.replace(`/painel/${companyIdentifier}/dashboard`);
          }
       }
+   };
 
+   useEffect(() => {
+      validatingRoute();
    }, []);
+
+
+   useEffect(() => {
+      if (invitationAccepted && !monitoredFetching && !organizationFetching) {
+         validatingRoute();
+      }
+   }, [invitationAccepted, monitoredFetching, organizationFetching]);
+
 
    if (!isValidIdentifier && params.monitored_company_identifier) {
       notFound();
    }
 
-   if (permissions.rules.hasInvite) {
-      return <ModalAcceptInvitationOrganization />;
+   if (pathname === '/painel/convite') {
+      return children;
    }
 
    if (pathname !== '/painel')
@@ -79,12 +99,11 @@ export function PanelLayout({ children }: { children: ReactNode }) {
                      <main className="app-main flex-column flex-row-fluid ">
                         <div className={'d-flex flex-column flex-column-fluid'}>
                            <div className={'app-content'}>
-                              {params.monitored_company_identifier &&
+                              {params.monitored_company_identifier && (
                                  <div className="col-sm-12 mb-5 mb-xl-10">
                                     <MenuOptions />
                                  </div>
-                              }
-
+                              )}
 
                               {children}
                            </div>
