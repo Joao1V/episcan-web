@@ -42,7 +42,7 @@ export default function Page(props) {
 
                <div className="d-flex flex-wrap my-1">
                   <button
-                     className="btn btn-sm btn-light btn-color-muted btn-active-primary"
+                     className="btn btn-sm btn-outline btn-outline-primary btn-active-light-primary me-3"
                      tabIndex={-1}
                      onClick={() => modalOrganizationInviteUser.setModal(true)}
                   >
@@ -50,7 +50,7 @@ export default function Page(props) {
                      Convites
                   </button>
                   <button
-                     className="btn btn-sm btn-light btn-color-muted btn-active-primary"
+                     className="btn btn-sm  btn-secondary "
                      tabIndex={-1}
                      onClick={() => modalOrganizationAddUser.setModal(true)}
                   >
