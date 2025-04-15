@@ -1,3 +1,5 @@
+import { USER_PERMISSION_ROLE } from '@/helpers/constants';
+
 type Organization = {
    identifier: string;
    name: string;
@@ -22,7 +24,7 @@ type Organization = {
    created_at: string;
 };
 
-type PermissionRole = 'OWNER' | 'ADMIN' | 'USER';
+type PermissionRole =  keyof typeof USER_PERMISSION_ROLE;
 
 type OrganizationUsers = {
    identifier: string;
@@ -33,4 +35,14 @@ type OrganizationUsers = {
    permission_role: PermissionRole;
 };
 
-export type { Organization, OrganizationUsers };
+type OrganizationInviteUsers = {
+   cpfcnpj: string;
+   expire_at: string;
+   identifier: string;
+   invite_email: string;
+   invite_role: PermissionRole;
+   name: string;
+   used_at: string | null;
+};
+
+export type { Organization, OrganizationUsers, OrganizationInviteUsers };

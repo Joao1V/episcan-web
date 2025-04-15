@@ -1,6 +1,6 @@
 export const USER_PERMISSION_ROLE = {
    OWNER: 'DONO',
    ADMIN: 'ADMIN',
-   MANAGER: 'MANAGER',
+   MANAGER: 'GERENTE',
    VIEWER: 'VIEWER',
 } as const;
