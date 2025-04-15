@@ -57,10 +57,10 @@ $primary-clarity: 				rgba(#1B84FF, 0.2) !default;
 $primary-inverse: 				$white !default;
 
 // Secondary colors
-$secondary: 					#00974d !default;
-$secondary-active: 				#6a982e !default;
-$secondary-light: 				rgba(#8bc73a, 0.2) !default;
-$secondary-clarity:				rgba(#8bc73a, 0.2) !default;
+$secondary: 					$gray-800 !default;
+$secondary-active: 				$gray-900 !default;
+$secondary-light: 				$gray-700 !default;
+$secondary-clarity:				$gray-700 !default;
 $secondary-inverse:				$gray-200 !default;
 
 //Tertiary
