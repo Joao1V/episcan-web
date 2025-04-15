@@ -38,5 +38,6 @@ export function useMonitoredCompanyPaginate(options?: Options) {
    return {
       data,
       refetch,
+      isFetching
    };
 }

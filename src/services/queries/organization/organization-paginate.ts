@@ -6,11 +6,12 @@ import { useQueryClient } from '@tanstack/react-query';
 
 type Options = {
    enabled: boolean,
+   onSuccess?: (response: PaginateResponse<Organization[]>) => Promise<void> | void,
 }
 export function useOrganizationPaginate(options?: Options) {
    const queryClient = useQueryClient();
 
-   const { data, refetch: _refetch } = useGetData<ResponsePaginate<Organization[]>, PaginateResponse<Organization[]>>({
+   const { data, refetch: _refetch, isFetching } = useGetData<ResponsePaginate<Organization[]>, PaginateResponse<Organization[]>>({
       queryKey: [QUERY_KEYS.ORGANIZATION.PAGINATE],
       url: 'restrict/organization/paginate',
       onSuccess: (response) => {
@@ -24,5 +25,5 @@ export function useOrganizationPaginate(options?: Options) {
       await queryClient.refetchQueries({ queryKey: [QUERY_KEYS.ORGANIZATION.ACTIVE] });
    };
 
-   return { data, refetch };
+   return { data, refetch, isFetching };
 }
