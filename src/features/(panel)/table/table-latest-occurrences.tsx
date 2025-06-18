@@ -20,6 +20,7 @@ import { FILTER_KEYS } from '@/services/queries/queryKeys';
 import { TableBuilder, createColumnHelper } from '@/libs/table-builder';
 import { Paginate } from '@/libs/table-builder/components/component-paginate';
 import { ComponentsEmpty } from '@components/components-empty';
+import { Tooltip } from 'react-tooltip';
 
 const columnHelper = createColumnHelper<CameraVerification>();
 
@@ -76,6 +77,31 @@ export function TableLatestOccurrences(props: { companyIdentifier: string }) {
       [],
    );
 
+   if (isLoading) return (
+      <div className="row g-5">
+         {[...Array(6)].map((_, index) => (
+            <div key={index} className="col-12 col-md-6 col-xl-4">
+               <div className="border border-gray-500 rounded-2">
+                  <div className="placeholder-glow">
+                     <div className="placeholder rounded-top-2 w-100" style={{ height: '400px' }} />
+                  </div>
+                  <div className="p-4">
+                     <h5 className="placeholder-glow">
+                        <span className="placeholder col-6"></span>
+                     </h5>
+                     <p className="placeholder-glow">
+                        <span className="placeholder col-8"></span>
+                     </p>
+                     <p className="placeholder-glow mb-0 text-end">
+                        <span className="placeholder col-4"></span>
+                     </p>
+                  </div>
+               </div>
+            </div>
+         ))}
+      </div>
+   );
+
    return (
       <div>
          {cameraVerification?.data.length === 0 && (
@@ -100,23 +126,31 @@ export function TableLatestOccurrences(props: { companyIdentifier: string }) {
                            className={'rounded-top-2'}
                            pagination={{ clickable: true }}
                         >
-                           {images.map((image: any, imageIndex) => (
-                              <SwiperSlide key={imageIndex}>
-                                 <div
-                                    onDoubleClick={() => {
-                                       window.open(image, '_blank');
-                                    }}
-                                 >
-                                    <Image
-                                       src={image}
-                                       alt={''}
-                                       className={'w-100'}
-                                       width={1000}
-                                       height={400}
-                                    />
-                                 </div>
-                              </SwiperSlide>
-                           ))}
+                           {images.map((image: any, imageIndex) => {
+                              const uniqueId = (Math.floor(Math.random() * 1000) + 1) + (imageIndex * imageIndex);
+                              return (
+                                 <SwiperSlide key={imageIndex}>
+                                    <div
+                                       onDoubleClick={() => {
+                                          window.open(image, '_blank');
+                                       }}
+
+                                    >
+                                       <Image
+                                          src={image}
+                                          alt={''}
+                                          title="Clique duas vezes para abrir a imagem"
+                                          className={'w-100'}
+                                          width={1000}
+                                          height={400}
+                                          id={`image-${uniqueId}`}
+                                          data-tooltip-id={`tooltip-${uniqueId}`}
+                                       />
+                                    </div>
+
+                                 </SwiperSlide>
+                              );
+                           })}
                         </Swiper>
 
                         <div className={'p-4'}>

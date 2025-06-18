@@ -4,6 +4,16 @@ const nextConfig: NextConfig = {
    eslint: {
       ignoreDuringBuilds: true,
    },
+   sassOptions: {
+      silenceDeprecations: [
+         'legacy-js-api',
+         'mixed-decls',
+         'color-functions',
+         'global-builtin',
+         'import'
+      ],
+      quietDeps: true,
+   },
    images: {
       remotePatterns: [
          {

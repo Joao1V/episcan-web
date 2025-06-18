@@ -70,7 +70,7 @@ export function Toolbar() {
                      <>
                         <div className="d-flex flex-wrap flex-sm-nowrap gap-7">
                            <div className="d-flex flex-center position-relative flex-shrink-0 bg-light rounded w-100px h-100px w-lg-150px h-lg-150px">
-                              <Image fill={true} src={logo} alt="image" />
+                              <Image fill={true} src={'/images/fake-logo.png'} alt="image" />
                            </div>
 
                            <div className="flex-grow-1">
