@@ -1,6 +1,6 @@
 'use client';
 
-import { useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 
 interface PaginationDefault {
    page: number;
@@ -15,7 +15,7 @@ interface UsePaginateOptions<TFilters> {
 }
 
 interface UsePaginateReturn<TFilters> {
-   paginate: Paginate<TFilters>;
+   paginate: Paginate<TFilters> | Record<any, any>;
    updateFilterValue: (label: keyof TFilters, value: any) => void;
    updateFilters: (newFilters: Partial<Paginate<TFilters>>) => void;
 }
@@ -29,9 +29,13 @@ function usePaginate<TFilters extends object>(
    const queryClient = useQueryClient();
    const queryKey = ['filters_paginates', filterKey];
 
-   const { data: storedData } = useSuspenseQuery<Paginate<TFilters>>({
+   const { data: storedData } = useQuery({
       queryKey,
-      initialData,
+      queryFn: () => {
+         console.log('oie');
+         return initialData || {};
+      },
+      initialData: initialData,
    });
 
     const updateFilterValue = <K extends keyof TFilters>(
@@ -53,7 +57,7 @@ function usePaginate<TFilters extends object>(
       });
    };
 
-   return { paginate: storedData, updateFilterValue, updateFilters };
+   return { paginate: storedData || {}, updateFilterValue, updateFilters };
 }
 
 export { usePaginate };
